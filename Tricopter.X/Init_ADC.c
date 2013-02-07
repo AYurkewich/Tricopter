@@ -13,7 +13,7 @@ void init_ADC(void)
     	//AD1CON1bits.ORDER = 0;			//Convert even channel first
     	//AD1CON1bits.SEQSAMP = 0;		//Select simultaneous sampling
     	//AD1CON1bits.ADCS = 5;			//ADC clock = FADC/6 = 120MHz / 6 = 20MHz
-
+	//git test
     	ADPCFGbits.PCFG0 = 0; 		 //select CH0 as analog pin 
     	ADPCFGbits.PCFG1 = 0; 		 //select CH1 as analog pin
 
