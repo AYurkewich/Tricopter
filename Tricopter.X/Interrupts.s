@@ -29,6 +29,18 @@ __T1Interrupt:
 
         btg     PORTB,#cLEDBLINK
 
+//get accelerometer values
+
+//get gyro values
+
+//make accelerometer average
+
+//make gyro average
+
+//read if battery low
+//RB13
+//Read if battery is less than 2.9
+//RB14
         
 T1_Out:
 		pop.d	w4

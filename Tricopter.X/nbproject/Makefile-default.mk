@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/Init_ADC.o.d ${OBJECTDIR}/Init_DAC_Comparators.o.d ${OBJECTDIR}/Init_Osc.o.d ${OBJECTDIR}/Init_PWM.o.d ${OBJECTDIR}/Init_Timer1.o.d ${OBJECTDIR}/tricopter.o.d ${OBJECTDIR}/Interrupts.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o ${OBJECTDIR}/spi_init.o ${OBJECTDIR}/Init_I2C.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/Init_ADC.o.d ${OBJECTDIR}/Init_DAC_Comparators.o.d ${OBJECTDIR}/Init_Osc.o.d ${OBJECTDIR}/Init_PWM.o.d ${OBJECTDIR}/Init_Timer1.o.d ${OBJECTDIR}/tricopter.o.d ${OBJECTDIR}/Interrupts.o.d ${OBJECTDIR}/spi_init.o.d ${OBJECTDIR}/Init_I2C.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o
+OBJECTFILES=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o ${OBJECTDIR}/spi_init.o ${OBJECTDIR}/Init_I2C.o
 
 
 CFLAGS=
@@ -109,6 +109,18 @@ ${OBJECTDIR}/tricopter.o: tricopter.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  tricopter.c  -o ${OBJECTDIR}/tricopter.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/tricopter.o.d"        -g -D__DEBUG   -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/tricopter.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/spi_init.o: spi_init.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/spi_init.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  spi_init.c  -o ${OBJECTDIR}/spi_init.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/spi_init.o.d"        -g -D__DEBUG   -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/spi_init.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/Init_I2C.o: Init_I2C.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/Init_I2C.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Init_I2C.c  -o ${OBJECTDIR}/Init_I2C.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Init_I2C.o.d"        -g -D__DEBUG   -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/Init_I2C.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/Init_ADC.o: Init_ADC.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -145,6 +157,18 @@ ${OBJECTDIR}/tricopter.o: tricopter.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/tricopter.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  tricopter.c  -o ${OBJECTDIR}/tricopter.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/tricopter.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/tricopter.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/spi_init.o: spi_init.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/spi_init.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  spi_init.c  -o ${OBJECTDIR}/spi_init.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/spi_init.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/spi_init.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/Init_I2C.o: Init_I2C.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/Init_I2C.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Init_I2C.c  -o ${OBJECTDIR}/Init_I2C.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Init_I2C.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/Init_I2C.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
