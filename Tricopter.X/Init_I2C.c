@@ -120,4 +120,6 @@
 // i2c_stop();               // send stop sequence
 
 //NOTE: If Slave not read to take data it will hold SCL Low
+//NOTE: Must modify board add 1800ohm resistor b/w +5 and SDA and +5 and SCL
+//Use Tris to control values sent to accelerometer (pic SDA/SCL input=+5V to accel SDA/SCL)
 /////////////////END Tutorial/////////////////////////
