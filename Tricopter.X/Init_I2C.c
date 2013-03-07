@@ -1,7 +1,8 @@
 
 
 
-#include "p33FJ32MC202.h"
+#include "p33Fxxxx.h"
+#include "i2c.h"
 void Init_I2C(void)
 {
 ////////HOW TO USE I2C/////////////////
@@ -133,68 +134,126 @@ void Init_I2C(void)
 //       5432109876543210
 
 
+//Set Baud Rate//
+    I2C1BRG=31;
 ///I2C Communication Registers /////
     //I2C CON Register////
-//bit 15, Enable the module
+//bit 15, Enable the module (Change to turn module off)
 I2CCONbits.I2CEN=1;
 //bit 14, unimplemented
 //bit 13,stop module when PIC is in idle
 I2CCONbits.I2CSIDL=1;
-//bit 12, (when being used as slave)
+//bit 12, (when being used as slave)?
 I2CCONbits.SCLREL=1;
-//bit 11, Acknowledge all addresses
-I2CCONbits.IPMIEN=1;
-//bit 10,7 bit address
+//bit 11, Acknowledge all addresses?
+I2CCONbits.IPMIEN=0;
+//bit 10,Invensense chip has a 7 bit slave address
 I2CCONbits.A10M=0;
-//bit 9, slew rate control enabled
-I2CCONbits.DISSLW=0;
+//bit 9, slew rate control disabled
+I2CCONbits.DISSLW=1;
 //bit 8, enable I/O thresholds
 I2CCONbits.SMEN=1;
 //bit 7, module enabled for reception
 I2CCONbits.GCEN=1;
-//bit 6, (when being used as slave)
-I2CCONbits.STREN=1;
-//bit 5,Send NACK when data recieved
+//bit 6, (when being used as slave)?
+I2CCONbits.STREN=0;
+//bit 5,Send NACK when data recieved?
 I2CCONbits.ACKDT=1;
 //bit 4, enable ACK sequence on recieve
 I2CCONbits.ACKEN=0;
-//bit 3,Enable recieve
-I2CCONbits.RCEN=1;
-//bit 2, Enable Stop sequence
-I2CCONbits.PEN=1;
-//bit 1, Enable repeated start
-I2CCONbits.RSEN=1;
-//bit 0, Initiate Start condition
-I2CCONbits.SEN=1;
+//bit 3,Recieve not enable (Change when you want to receive data)
+I2CCONbits.RCEN=0;
+//bit 2, Stop sequence not enable (Change when you want to send stop sequence)
+I2CCONbits.PEN=0;
+//bit 1, Repeated start not enabled (Change when you want to send repeated start)
+I2CCONbits.RSEN=0;
+//bit 0, Start sequence not enabled (Change when you want to send start sequence)
+I2CCONbits.SEN=0;
+
+///transmit initialization
+I2CTRN = 0x0000;
+///receive initialization
+I2CRCV = 0x0000;
 
 ///I2C STATUS REGISTER///
-//bit 15,NACK received from slave
- I2CSTATbits.ACKSTAT=1;
+//bit 15, 1=NACK received from slave (Check for 0 meaning slave acknowledges transmit)
 //bit 14, Master transmit in progress
-  I2CSTATbits.TRSTAT=1;
  //bit 10,bus collision
-  I2CSTATbits.BCL=0;
   //bit 9,General Call status received
- I2CSTATbits.GCSTAT=1;
  //bit 8,Ten bit address match
- I2CSTATbits.ADD10=0;
  //bit 7,Write to transmit bit did not fail
-  I2CSTATbits.IWCOL=0;
   //bit 6,Receive Overflow
-  I2CSTATbits.I2COV=0;
   //bit 5,Indicates last byte recieved was data
- I2CSTATbits.D_A=1;
  //bit 4,Stop bit detected last
- I2CSTATbits.P=1;
  //bit 3,Start bit detected last
- I2CSTATbits.S=1;
  //bit 2,Read=1 Write=0
-  I2CSTATbits.R_W=1;
  //bit 1, Data not recieved
-   I2CSTATbits.RBF=0;
   //bit 0, Transmit complete
-  I2CSTATbits.TBF=0;
-
-  ///I2C MSK Register///
-I2C1MSK= b1101000 ;
 }
+
+void I2CSTARTSEQ(void)
+{
+    I2CCONbits.SEN=1;
+    while (I2CCONbits.SEN);
+}
+
+void I2CSTOPSEQ(void)
+ {
+    I2CCONbits.PEN=1;
+    while (I2CCONbits.PEN);
+}
+
+void REPEATSTART(void)
+{
+    I2CCONbits.RSEN=1;
+    while (I2CCONbits.RSEN);
+}
+
+void SENDNACK (void)
+{
+  I2CCONbits.ACKDT=1;
+  I2CCONbits.ACKEN=1;
+  while(I2C1CONbits.ACKEN);
+}
+
+void SENDACK (void)
+{
+  I2CCONbits.ACKDT=0;
+  I2CCONbits.ACKEN=1;
+  while(I2C1CONbits.ACKEN);
+}
+
+double READFROMSLAVE(double SlaveRegisterAddress)
+{
+    //start seq
+    I2CSTARTSEQ();
+    //send slave address(1101000) + Write bit(0)
+    I2CTRN= 0b11010000;
+    //wait for transmit to complete
+    while (I2CSTATbits.TBF);
+    //wait for acknowledge
+    while (I2CSTATbits.ACKSTAT);
+    //send slave register address
+    I2CTRN= SlaveRegisterAddress;
+    //wait for acknowledge
+    while (I2CSTATbits.ACKSTAT);
+    //Repeated Start
+    REPEATSTART();
+    //send slave address + Read bit
+    I2CTRN= 0b11010001;
+    //wait for transmit to complete
+    while (I2CSTATbits.TBF);
+    //wait for acknowledge
+    while (I2CSTATbits.ACKSTAT);
+    //receive data
+    double SlaveData= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+    //send NACK, happens due to already set initialization bits
+    SENDNACK();
+    //stop seq
+    I2CSTOPSEQ();
+    return SlaveData;
+}
+
+
