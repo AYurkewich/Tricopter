@@ -1,4 +1,9 @@
 
+
+
+#include "p33FJ32MC202.h"
+void Init_I2C(void)
+{
 ////////HOW TO USE I2C/////////////////
 //http://www.robot-electronics.co.uk/acatalog/I2C_Tutorial.html
  //to write to a slave device:
@@ -123,3 +128,73 @@
 //NOTE: Must modify board add 1800ohm resistor b/w +5 and SDA and +5 and SCL
 //Use Tris to control values sent to accelerometer (pic SDA/SCL input=+5V to accel SDA/SCL)
 /////////////////END Tutorial/////////////////////////
+//SDA port RB9
+//SCL port RB8
+//       5432109876543210
+
+
+///I2C Communication Registers /////
+    //I2C CON Register////
+//bit 15, Enable the module
+I2CCONbits.I2CEN=1;
+//bit 14, unimplemented
+//bit 13,stop module when PIC is in idle
+I2CCONbits.I2CSIDL=1;
+//bit 12, (when being used as slave)
+I2CCONbits.SCLREL=1;
+//bit 11, Acknowledge all addresses
+I2CCONbits.IPMIEN=1;
+//bit 10,7 bit address
+I2CCONbits.A10M=0;
+//bit 9, slew rate control enabled
+I2CCONbits.DISSLW=0;
+//bit 8, enable I/O thresholds
+I2CCONbits.SMEN=1;
+//bit 7, module enabled for reception
+I2CCONbits.GCEN=1;
+//bit 6, (when being used as slave)
+I2CCONbits.STREN=1;
+//bit 5,Send NACK when data recieved
+I2CCONbits.ACKDT=1;
+//bit 4, enable ACK sequence on recieve
+I2CCONbits.ACKEN=0;
+//bit 3,Enable recieve
+I2CCONbits.RCEN=1;
+//bit 2, Enable Stop sequence
+I2CCONbits.PEN=1;
+//bit 1, Enable repeated start
+I2CCONbits.RSEN=1;
+//bit 0, Initiate Start condition
+I2CCONbits.SEN=1;
+
+///I2C STATUS REGISTER///
+//bit 15,NACK received from slave
+ I2CSTATbits.ACKSTAT=1;
+//bit 14, Master transmit in progress
+  I2CSTATbits.TRSTAT=1;
+ //bit 10,bus collision
+  I2CSTATbits.BCL=0;
+  //bit 9,General Call status received
+ I2CSTATbits.GCSTAT=1;
+ //bit 8,Ten bit address match
+ I2CSTATbits.ADD10=0;
+ //bit 7,Write to transmit bit did not fail
+  I2CSTATbits.IWCOL=0;
+  //bit 6,Receive Overflow
+  I2CSTATbits.I2COV=0;
+  //bit 5,Indicates last byte recieved was data
+ I2CSTATbits.D_A=1;
+ //bit 4,Stop bit detected last
+ I2CSTATbits.P=1;
+ //bit 3,Start bit detected last
+ I2CSTATbits.S=1;
+ //bit 2,Read=1 Write=0
+  I2CSTATbits.R_W=1;
+ //bit 1, Data not recieved
+   I2CSTATbits.RBF=0;
+  //bit 0, Transmit complete
+  I2CSTATbits.TBF=0;
+
+  ///I2C MSK Register///
+I2C1MSK= b1101000 ;
+}
