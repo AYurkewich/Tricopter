@@ -29,9 +29,32 @@ __T1Interrupt:
 
         btg     PORTB,#cLEDBLINK
 
-//get accelerometer values
+;get accelerometer values
+;get gyro values
+///Ask Adam if this works!
+global  _main
 
-//get gyro values
+extern  _ACCGYRODATA
+
+section .data
+
+section .code
+
+_main
+
+        push    int &AccelerometerX
+        push    int &AccelerometerY
+        push    int &AccelerometerZ
+        push    int &GyroscopeX
+        push    int &GyroscopeY
+        push    int &GyroscopeZ
+        call    _ACCGYRODATA
+        ret
+
+
+
+
+
 
 //make accelerometer average
 

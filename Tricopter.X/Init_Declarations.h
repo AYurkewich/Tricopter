@@ -64,6 +64,7 @@ extern void     init_PWM(void);
 extern void     init_ADC(void);
 extern void	init_Osc(void);
 extern void	init_T1(void);
+extern void     init_I2C(void);
 
 extern void	init_DAC_Comparators(void);
 

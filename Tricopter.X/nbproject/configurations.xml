@@ -28,6 +28,8 @@
       <itemPath>dspic33fj32mc202.pdf</itemPath>
       <itemPath>spi_init.c</itemPath>
       <itemPath>Init_I2C.c</itemPath>
+      <itemPath>../../PS-MPU-6100A.pdf</itemPath>
+      <itemPath>../../RM-MPU-6100A.pdf</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

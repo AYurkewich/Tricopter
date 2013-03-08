@@ -46,3 +46,12 @@
 
     ;ucData2bCRCd
     .equiv  cbtCRCHiLowBit2Check, 0x000
+
+    ;Accelerometer and Gyro values
+    ;                     '5432109876543210
+    .equiv AccelerometerX, 0000000000000000
+    .equiv AccelerometerY  0000000000000000
+    .equiv AccelerometerZ  0000000000000000
+    .equiv GyroscopeX      0000000000000000
+    .equiv GyroscopeY      0000000000000000
+    .equiv GyroscopeZ      0000000000000000

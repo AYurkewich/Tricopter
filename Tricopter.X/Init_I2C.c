@@ -223,8 +223,23 @@ void SENDACK (void)
   while(I2C1CONbits.ACKEN);
 }
 
-double READFROMSLAVE(double SlaveRegisterAddress)
+void ACCGYRODATA(int *AccX, int *AccY, int *AccZ, int *Temperature, int *GyroX, int *GyroY, int *GyroZ)
 {
+    int AccX1;
+    int AccX2;
+    int AccY1;
+    int AccY2;
+    int AccZ1;
+    int AccZ2;
+    int Temperature1;
+    int Temperature2;
+    int GyroX1;
+    int GyroX2;
+    int GyroY1;
+    int GyroY2;
+    int GyroZ1;
+    int GyroZ2;
+
     //start seq
     I2CSTARTSEQ();
     //send slave address(1101000) + Write bit(0)
@@ -234,7 +249,7 @@ double READFROMSLAVE(double SlaveRegisterAddress)
     //wait for acknowledge
     while (I2CSTATbits.ACKSTAT);
     //send slave register address
-    I2CTRN= SlaveRegisterAddress;
+    I2CTRN= 59;
     //wait for acknowledge
     while (I2CSTATbits.ACKSTAT);
     //Repeated Start
@@ -245,15 +260,129 @@ double READFROMSLAVE(double SlaveRegisterAddress)
     while (I2CSTATbits.TBF);
     //wait for acknowledge
     while (I2CSTATbits.ACKSTAT);
-    //receive data
-    double SlaveData= I2CRCV ;
+    
+    //receive Accelerometer X1 data
+    AccX1= I2CRCV ;
     //I2CSTATbits.RBF=1 when receive complete
     while (I2CSTATbits.RBF==0);
-    //send NACK, happens due to already set initialization bits
+
+    //send ACK
+    SENDACK();
+    //receive Accelerometer X2 data
+    AccX2= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //Acculmulated AccelerometerX value
+    AccX= AccX1<<8+AccX2;
+
+    //send ACK
+    SENDACK();
+    //receive Accelerometer Y1 data
+    AccY1= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //send ACK
+    SENDACK();
+    //receive Accelerometer Y2 data
+    AccY2= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //Acculmulated AccelerometerY value
+    AccY= AccY1<<8+AccY2;
+
+    //send ACK
+    SENDACK();
+    //receive Accelerometer Z1 data
+    AccZ1= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //send ACK
+    SENDACK();
+    //receive Accelerometer Z2 data
+    AccZ2= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //Acculmulated AccelerometerZ value
+    AccZ= AccZ1<<8+AccZ2;
+
+    //send ACK
+    SENDACK();
+    //receive Temperature1 data
+    int Temperature1= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //send ACK
+    SENDACK();
+    //receive Temperature2 data
+    int Temperature2= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //Accumulated Temperatur Data
+    Temperature= Temperature1<<8 + Temperature2;
+
+    //send ACK
+    SENDACK();
+    //receive Gyroscope X1 data
+    GyroX1= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //send ACK
+    SENDACK();
+    //receive Gyroscope X2 data
+    GyroX2= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //Accumulated GyroX data
+    GyroX= GyroX1<<8 + GyroX2;
+
+    //send ACK
+    SENDACK();
+    //receive Gyroscope Y1 data
+    GyroY1= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //send ACK
+    SENDACK();
+    //receive Gyroscope Y2 data
+    GyroY2= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //Accumulated GyroX data
+    GyroY= GyroY1<<8 + GyroY2;
+
+    //send ACK
+    SENDACK();
+    //receive Gyroscope Z1 data
+    GyroZ1= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //send ACK
+    SENDACK();
+    //receive Gyroscope Z2 data
+    GyroZ2= I2CRCV ;
+    //I2CSTATbits.RBF=1 when receive complete
+    while (I2CSTATbits.RBF==0);
+
+    //Accumulated GyroX data
+    GyroZ= GyroZ1<<8 + GyroZ2;
+
+    //send NACK
     SENDNACK();
     //stop seq
     I2CSTOPSEQ();
-    return SlaveData;
+    return;
 }
 
 
