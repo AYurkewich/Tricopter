@@ -31,39 +31,18 @@ __T1Interrupt:
 
 ;get accelerometer values
 ;get gyro values
-///Ask Adam if this works!
-global  _main
 
-extern  _ACCGYRODATA
+GOTO GETACCTEMPGYRODATA
+I2CDATATRANSMISSIONCOMPLETE
 
-section .data
+;make accelerometer average
 
-section .code
+;make gyro average
 
-_main
-
-        push    int &AccelerometerX
-        push    int &AccelerometerY
-        push    int &AccelerometerZ
-        push    int &GyroscopeX
-        push    int &GyroscopeY
-        push    int &GyroscopeZ
-        call    _ACCGYRODATA
-        ret
-
-
-
-
-
-
-//make accelerometer average
-
-//make gyro average
-
-//read if battery low
-//RB13
-//Read if battery is less than 2.9
-//RB14
+;read if battery low
+;RB13
+;Read if battery is less than 2.9
+;RB14
         
 T1_Out:
 		pop.d	w4

@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o ${OBJECTDIR}/spi_init.o ${OBJECTDIR}/Init_I2C.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/Init_ADC.o.d ${OBJECTDIR}/Init_DAC_Comparators.o.d ${OBJECTDIR}/Init_Osc.o.d ${OBJECTDIR}/Init_PWM.o.d ${OBJECTDIR}/Init_Timer1.o.d ${OBJECTDIR}/tricopter.o.d ${OBJECTDIR}/Interrupts.o.d ${OBJECTDIR}/spi_init.o.d ${OBJECTDIR}/Init_I2C.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o ${OBJECTDIR}/spi_init.o ${OBJECTDIR}/Init_I2C.o ${OBJECTDIR}/I2C_Data.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/Init_ADC.o.d ${OBJECTDIR}/Init_DAC_Comparators.o.d ${OBJECTDIR}/Init_Osc.o.d ${OBJECTDIR}/Init_PWM.o.d ${OBJECTDIR}/Init_Timer1.o.d ${OBJECTDIR}/tricopter.o.d ${OBJECTDIR}/Interrupts.o.d ${OBJECTDIR}/spi_init.o.d ${OBJECTDIR}/Init_I2C.o.d ${OBJECTDIR}/I2C_Data.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o ${OBJECTDIR}/spi_init.o ${OBJECTDIR}/Init_I2C.o
+OBJECTFILES=${OBJECTDIR}/Init_ADC.o ${OBJECTDIR}/Init_DAC_Comparators.o ${OBJECTDIR}/Init_Osc.o ${OBJECTDIR}/Init_PWM.o ${OBJECTDIR}/Init_Timer1.o ${OBJECTDIR}/tricopter.o ${OBJECTDIR}/Interrupts.o ${OBJECTDIR}/spi_init.o ${OBJECTDIR}/Init_I2C.o ${OBJECTDIR}/I2C_Data.o
 
 
 CFLAGS=
@@ -181,12 +181,24 @@ ${OBJECTDIR}/Interrupts.o: Interrupts.s  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_AS_PRE)  Interrupts.s  -o ${OBJECTDIR}/Interrupts.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -D__DEBUG   -omf=elf -Wa,-MD,"${OBJECTDIR}/Interrupts.o.d",--defsym=__MPLAB_BUILD=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,,-g,--no-relax$(MP_EXTRA_AS_POST)
 	@${FIXDEPS} "${OBJECTDIR}/Interrupts.o.d"  $(SILENT)  -rsi ${MP_CC_DIR}../  
 	
+${OBJECTDIR}/I2C_Data.o: I2C_Data.s  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/I2C_Data.o.d 
+	${MP_CC} $(MP_EXTRA_AS_PRE)  I2C_Data.s  -o ${OBJECTDIR}/I2C_Data.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -D__DEBUG   -omf=elf -Wa,-MD,"${OBJECTDIR}/I2C_Data.o.d",--defsym=__MPLAB_BUILD=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,,-g,--no-relax$(MP_EXTRA_AS_POST)
+	@${FIXDEPS} "${OBJECTDIR}/I2C_Data.o.d"  $(SILENT)  -rsi ${MP_CC_DIR}../  
+	
 else
 ${OBJECTDIR}/Interrupts.o: Interrupts.s  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/Interrupts.o.d 
 	${MP_CC} $(MP_EXTRA_AS_PRE)  Interrupts.s  -o ${OBJECTDIR}/Interrupts.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -Wa,-MD,"${OBJECTDIR}/Interrupts.o.d",--defsym=__MPLAB_BUILD=1,-g,--no-relax$(MP_EXTRA_AS_POST)
 	@${FIXDEPS} "${OBJECTDIR}/Interrupts.o.d"  $(SILENT)  -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/I2C_Data.o: I2C_Data.s  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/I2C_Data.o.d 
+	${MP_CC} $(MP_EXTRA_AS_PRE)  I2C_Data.s  -o ${OBJECTDIR}/I2C_Data.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -Wa,-MD,"${OBJECTDIR}/I2C_Data.o.d",--defsym=__MPLAB_BUILD=1,-g,--no-relax$(MP_EXTRA_AS_POST)
+	@${FIXDEPS} "${OBJECTDIR}/I2C_Data.o.d"  $(SILENT)  -rsi ${MP_CC_DIR}../  
 	
 endif
 

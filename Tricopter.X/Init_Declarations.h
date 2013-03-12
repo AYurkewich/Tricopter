@@ -65,9 +65,30 @@ extern void     init_ADC(void);
 extern void	init_Osc(void);
 extern void	init_T1(void);
 extern void     init_I2C(void);
-
+//how do I add the assembly file I2C_data
 extern void	init_DAC_Comparators(void);
 
+unsigned int AccX;
+unsigned int AccY;
+unsigned int AccZ;
+unsigned int Temperature;
+unsigned int GyroX;
+unsigned int GyroY;
+unsigned int GyroZ;
 
+unsigned int AccX1;
+unsigned  int AccX2;
+unsigned   int AccY1;
+unsigned  int AccY2;
+unsigned  int AccZ1;
+unsigned  int AccZ2;
+unsigned  int Temperature1;
+unsigned  int Temperature2;
+unsigned  int GyroX1;
+unsigned  int GyroX2;
+unsigned  int GyroY1;
+unsigned  int GyroY2;
+unsigned  int GyroZ1;
+unsigned  int GyroZ2;
 
 #endif

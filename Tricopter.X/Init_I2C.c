@@ -135,7 +135,7 @@ void Init_I2C(void)
 
 
 //Set Baud Rate//
-    I2C1BRG=31;
+    I2C1BRG=47;
 ///I2C Communication Registers /////
     //I2C CON Register////
 //bit 15, Enable the module (Change to turn module off)
@@ -157,7 +157,7 @@ I2CCONbits.SMEN=1;
 I2CCONbits.GCEN=1;
 //bit 6, (when being used as slave)?
 I2CCONbits.STREN=0;
-//bit 5,Send NACK when data recieved?
+//bit 5,Send NACK when data recieved
 I2CCONbits.ACKDT=1;
 //bit 4, enable ACK sequence on recieve
 I2CCONbits.ACKEN=0;
@@ -190,7 +190,7 @@ I2CRCV = 0x0000;
  //bit 1, Data not recieved
   //bit 0, Transmit complete
 }
-
+/*
 void I2CSTARTSEQ(void)
 {
     I2CCONbits.SEN=1;
@@ -385,4 +385,4 @@ void ACCGYRODATA(int *AccX, int *AccY, int *AccZ, int *Temperature, int *GyroX, 
     return;
 }
 
-
+*/
