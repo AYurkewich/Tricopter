@@ -72,3 +72,4 @@
     .equiv GyroY2, 0x0000
     .equiv GyroZ1, 0x0000
     .equiv GyroZ2, 0x0000
+    .equiv AccOLD, 0x0000

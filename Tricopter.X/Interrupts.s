@@ -36,6 +36,9 @@ GOTO GETACCTEMPGYRODATA
 I2CDATATRANSMISSIONCOMPLETE
 
 ;make accelerometer average
+mov AccX, WREG
+add AccXOLD
+
 
 ;make gyro average
 
