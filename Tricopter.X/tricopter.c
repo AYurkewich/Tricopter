@@ -71,10 +71,47 @@
 #define LB14    LATBbits.LATB14 //
 #define LB15    LATBbits.LATB15 //
 
-int main(void)
+//VARIABLE DEFINITIONS
+int xPos, yPos, zPos, xAng, yAng, zAng; 
+volatile unsigned int spaceAbs[6] = {xPos, yPos, zPos, xAng, yAng, zAng}; //Absolute Pos/Orientation array
+int xPosD, yPosD, zPosD, xAngD, yAngD, zAngD; 
+volatile unsigned int spaceDes[6] = {xPosD, yPosD, zPosD, xAngD, yAngD, zAngD}; //Destination Pos/Orientation array
+int xPosR, yPosR, zPosR, xAngR, yAngR, zAngR;
+volatile unsigned int spaceRel[6] = {xPosR, yPosR, zPosR, xAngR, yAngR, zAngR}; //Relative Pos/Orientation array
+int xPosIn, yPosIn, zPosIn, xAngIn, yAngIn, zAngIn;                              
+volatile unsigned int input[6] = {xPosIn, yPosIn, zPosIn, xAngIn, yAngIn, zAngIn}; //accel and gyro input placeholders
+int xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal;                              
+volatile unsigned int spaceCal[6] = {xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal}; //accel and gyro input placeholders
+
+int numGoals = 6; //Number of set goals
+volatile unsigned int goal[numGoals][6]; //start position
+/*volatile unsigned int goal1[6]; //position 1
+volatile unsigned int goal2[6]; //position 2
+volatile unsigned int goal3[6]; //position 3
+volatile unsigned int goal4[6]; //position 4
+volatile unsigned int goal5[6]; //position 5
+*/
+
+//FUNCTION DECLARATIONS
+void initialize(void);
+void go(void);
+void calibrate(void);
+//void dly(int);
+//void start(void);
+
+/***********************
+ * Questions
+ * Are we using a camera? path planning?
+ * Are we inputting different destinations?
+ * Does the chip always know where it is? NO It senses it from where it starts
+ * */
+
+void main(void)
 {
     //Initialize registers and ports
-
+    initialize();
+    calibrate();
+    go();
 
     /*
         ubBufferIndex = 0;
@@ -91,13 +128,13 @@ int main(void)
         init_T1();
         
 
-	//TRISBbits.TRISB4  = 0;		    	 		//RB4 as output
-        //LATBbits.LATB4 = 1; high
+	//TB04 = 0;                 //Set RB4 as output
+        //LB04 = 1; high            //Set RB4 as high
         //TRISBbits.TRISB6  = 1;
         //TRISBbits.TRISB7  = 1;
 
-   // PTCONbits.PTEN = 1;					// Enable the PWM
-//	ADCONbits.ADON = 1;					// Enable the ADC
+   // PTCONbits.PTEN = 1;                   // Enable the PWM
+//	ADCONbits.ADON = 1;                 // Enable the ADC
 
         uiHeaderZeroCount = 0;
 	IEC0bits.T1IE = 1;
@@ -106,46 +143,111 @@ int main(void)
 
 
 */
-    	while(1)
-	{
-          //calculate position based on accelerometer  
-            
-          //calculate orientation based on gyro  
-            
-          //calculate the forces and torques on the helicopter based on previous values 
-            
-          //what position do you want to go to  
-            
-          //what orientation do you want to be at 
-            
-          //use PID to establish how much to to pulse motor
-            
-          //tell motor 1 what to do
-            TB02 = 0;
-            
-          //tell motor 2 what to do
-            TB03 = 0;
-          //tell motor 3 what to do
-            TB04 = 0;
-          //tell motor 4 what to do
-            TB05 = 0;
-          //tell motor 5 what to do
-            TB06 = 0;
-          //tell motor 6 what to do
-            TB07 = 0;
-          //tell Red LED what to do
-                //RA3
+}
 
-          //tell Green LED what to do
-                //RA2
-          //do something if battery low (land) or very low (shut off)
+void initialize(void){
+  //WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
 
-            //Future stuff//
+  /*P1DIR = 0xFF; //(nov 13th)0xFF;           // All P1.x outputs
+  P1OUT = 0;                                // All P1.x reset
+  P2DIR = 0xFF;                             // All P2.x outputs
+  P2OUT = 0;                                // All P2.x reset
+  P1SEL = BIT1 + BIT2;                      //(nov 13th) add bit 0/ACLK                 // P1.1 = RXD, P1.2=TXD
+  P1SEL2 = BIT1 + BIT2;                     // P1.1 = RXD, P1.2=TXD
+  P3DIR = 0xFF;                             // All P3.x outputs
+  //P3REN = 0x00;                           // Set all Pulldown resistors to prevent random button pushes
+  P3OUT = 0;                                // All P3.x reset
 
-          //Vision System
-          //Object Detection
+//BUTTON INITIALIZATION
+  P1OUT |= 8;
+  P1REN |= 8;
+  P1DIR &= ~8;
 
-        };
+//Clock Initialization
+  UCA0CTL1 |= UCSSEL_1;                     // CLK = ACLK
+  UCA0BR0 = 0x03;                           // 32kHz/9600 = 3.41
+  UCA0BR1 = 0x00;                           //
+  UCA0MCTL = UCBRS1 + UCBRS0;               // Modulation UCBRSx = 3
+  UCA0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
+
+//TIMER INITIALIZATION >>Timer resets cause interrupt
+  TA0CCR0 = 62500 - 1;                      // A period of 62,500 cycles is 0 to 62,499.
+  TA0CCTL0 = CCIE;                          // Enable interrupts for CCR0.
+  TA0CTL = TASSEL_2 + ID_3 + MC_1 + TACLR;  // SMCLK, div 8, up mode,
+
+
+//ENABLE INTERRUPTS (IN 'LOW POWER MODE 3')
+  IFG2 &= ~UCA0RXIFG;                       //Clear the flag first to prevent immediate interrupt
+  IE2 |= UCA0RXIE;// + UCA0TXIE;            // Enable USCI_A0 RX TX or timer interrupt....CLEAR FLAGS FIRST?
+  _enable_interrupt();                      // Enable interrupts
+  //__bis_SR_register(LPM3_bits + GIE);     // Enter LPM3 w/ int until Byte RXed
+  */
+}
+
+void calibrate(void){
+    //Is it being calibrated with a camera?
+    waitForStartBit();
+    for(int i(0); i<6; i++){
+        goal[0][i] = input[i]; //intialize start bit
+    }
 
 }
 
+void go(void) {
+    while (1)
+        for (int i(0); i < numGoals; i++) { //cycle through goals
+            for (int j = 0; j < 6; j++) {
+                //Take 6 inputs from accelerometer and gyro into input[]
+                //Create 6 coordinate system
+                //Does gyro and accelerometer measure relative or absolute values?? Relative?
+                spaceRel[j] = input[j];
+                spaceAbs[j] = spaceAbs[j] + spaceRel[j];
+            }
+
+            //Recalculate every how much distance? Or does it waste more power
+
+
+            //??calculate the forces and torques on the helicopter based on previous values
+
+            //Desired position/orientation
+            spaceD[];
+
+            //use PID to establish how much to to pulse motor
+
+            //tell motor 1 what to do
+            TB02 = 0;
+
+            //tell motor 2 what to do
+            TB03 = 0;
+            //tell motor 3 what to do
+            TB04 = 0;
+            //tell motor 4 what to do
+            TB05 = 0;
+            //tell motor 5 what to do
+            TB06 = 0;
+            //tell motor 6 what to do
+            TB07 = 0;
+            //tell Red LED what to do
+            //RA3
+
+            //tell Green LED what to do
+            //RA2
+            //do something if battery low (land) or very low (shut off)
+
+            //Future stuff//
+
+            //Vision System
+            //Object Detection
+        }
+}//;
+
+void flatten(void){
+    while (notFlat){
+    //check speed
+    //check acceleration
+    //check orientation
+    //space[] = checkPos();
+        //if space[1].isCloseTo
+
+    }
+}
