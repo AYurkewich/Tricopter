@@ -204,13 +204,13 @@ void go(void) {
                 spaceAbs[j] = spaceAbs[j] + spaceRel[j];
             }
 
-            //Recalculate every how much distance? Or does it waste more power
+            //Recalculate every how much distance? Does it waste more power to keep changing motor speeds
 
 
             //??calculate the forces and torques on the helicopter based on previous values
 
             //Desired position/orientation
-            spaceD[];
+            goal[][];
 
             //use PID to establish how much to to pulse motor
 
@@ -232,6 +232,9 @@ void go(void) {
 
             //tell Green LED what to do
             //RA2
+            if(BAT_LOW){
+                land();
+            }
             //do something if battery low (land) or very low (shut off)
 
             //Future stuff//
@@ -250,4 +253,29 @@ void flatten(void){
         //if space[1].isCloseTo
 
     }
+}
+
+void land(void){
+    //check speed
+    //check speed
+    //check acceleration
+    //check orientation
+    //space[] = checkPos();
+    flatten();
+    descend(-1); //Descend to ground
+
+}
+
+void descend(int height){ //descends at constant speed to height
+    if(height = -1){
+        //decrease until cameras sense ground 2 inches away
+        slowAll(0, 0, 0);
+    }else{
+        descend to height
+    }
+}
+
+void slowAll(int M1Speed, int M2Speed, int M3Speed){
+    while(slowM1(0);
+    slowM2()
 }
