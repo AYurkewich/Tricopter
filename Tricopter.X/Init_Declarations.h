@@ -64,9 +64,33 @@ extern void     init_PWM(void);
 extern void     init_ADC(void);
 extern void	init_Osc(void);
 extern void	init_T1(void);
-
+extern void     init_I2C(void);
+//how do I add the assembly file I2C_data
 extern void	init_DAC_Comparators(void);
 
+int AccX;
+int AccY;
+int AccZ;
+int Temperature;
+int GyroX;
+int GyroY;
+int GyroZ;
 
+int AccX1;
+int AccX2;
+int AccY1;
+int AccY2;
+int AccZ1;
+int AccZ2;
+int Temperature1;
+int Temperature2;
+int GyroX1;
+int GyroX2;
+int GyroY1;
+int GyroY2;
+int GyroZ1;
+int GyroZ2;
+
+int AccXOLD;
 
 #endif

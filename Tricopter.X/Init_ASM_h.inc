@@ -46,3 +46,30 @@
 
     ;ucData2bCRCd
     .equiv  cbtCRCHiLowBit2Check, 0x000
+
+    ;Accelerometer and Gyro values
+    ;                     '5432109876543210
+
+    .equiv AccX,0x0000
+    .equiv AccY,0x0000
+    .equiv AccZ,0x0000
+    .equiv Temperature, 0x0000
+    .equiv GyroX, 0x0000
+    .equiv GyroY, 0x0000
+    .equiv GyroZ, 0x0000
+
+    .equiv AccX1, 0x0000
+    .equiv AccX2, 0x0000
+    .equiv AccY1, 0x0000
+    .equiv AccY2, 0x0000
+    .equiv AccZ1, 0x0000
+    .equiv AccZ2, 0x0000
+    .equiv Temperature1, 0x0000
+    .equiv Temperature2, 0x0000
+    .equiv GyroX1, 0x0000
+    .equiv GyroX2, 0x0000
+    .equiv GyroY1, 0x0000
+    .equiv GyroY2, 0x0000
+    .equiv GyroZ1, 0x0000
+    .equiv GyroZ2, 0x0000
+    .equiv AccOLD, 0x0000

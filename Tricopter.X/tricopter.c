@@ -21,9 +21,18 @@
  * Test pins: AVDD, RA0, RA1, RB13, VSS
  * Bluetooth: AVDD, VSS, RB11, RB12
  * Master power: RB15
- * BAT low: RB14
+ * BAT low: RB14   batLow=high=1?
  * Motor Power: RB10
- ********************************************************/
+ ********************************************************
+ *           X
+      1,4    ^      2,5
+         \   |   /
+          \  |  /
+      Y<-----O------
+             |
+             |
+            3,6
+ */
 
 //TRIS DEFINE STATEMENTS
 #define TA00     TRISAbits.TRISA0 //
@@ -82,38 +91,49 @@ int xPosIn, yPosIn, zPosIn, xAngIn, yAngIn, zAngIn;
 volatile unsigned int input[6] = {xPosIn, yPosIn, zPosIn, xAngIn, yAngIn, zAngIn}; //accel and gyro input placeholders
 int xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal;                              
 volatile unsigned int spaceCal[6] = {xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal}; //accel and gyro input placeholders
+volatile unsigned int motSpeed[6];
+volatile unsigned int batLow;
+int ms;
+int distToGround;
 
-int numGoals = 6; //Number of set goals
-volatile unsigned int goal[numGoals][6]; //start position
-/*volatile unsigned int goal1[6]; //position 1
-volatile unsigned int goal2[6]; //position 2
-volatile unsigned int goal3[6]; //position 3
-volatile unsigned int goal4[6]; //position 4
-volatile unsigned int goal5[6]; //position 5
-*/
+//SET GOALS
+int numGoals = 2; //Number of set goals
+volatile unsigned int goal[numGoals][6];
+//volatile unsigned int goal[0][6]; //set in calibrate method
+int goal[1][0]= 5 ; //position 1
+int goal[1][1]= 3; //position 2
+int goal[1][2]= -2; //position 3
+int goal[1][3]= 0; //position 4
+int goal[1][4]= 6; //position 5
+int goal[1][5]= -10; //position 5
+//volatile unsigned int goal1[6] = {};
 
-//FUNCTION DECLARATIONS
+
+//DECFLARE FUNCTIONS
 void initialize(void);
 void go(void);
 void calibrate(void);
-//void dly(int);
-//void start(void);
+void delay(int);
 
 /***********************
  * Questions
  * Are we using a camera? path planning?
  * Are we inputting different destinations?
  * Does the chip always know where it is? NO It senses it from where it starts
+ * What does the accel/gyro return?
  * */
 
 void main(void)
 {
     //Initialize registers and ports
     initialize();
+    delay(1000); //Delay??
     calibrate();
     go();
+}
 
-    /*
+void initialize(void){
+  //WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
         ubBufferIndex = 0;
         ubLastBufferIndex = 0;
 
@@ -126,12 +146,10 @@ void main(void)
 
 
         init_T1();
-        
+
 
 	//TB04 = 0;                 //Set RB4 as output
         //LB04 = 1; high            //Set RB4 as high
-        //TRISBbits.TRISB6  = 1;
-        //TRISBbits.TRISB7  = 1;
 
    // PTCONbits.PTEN = 1;                   // Enable the PWM
 //	ADCONbits.ADON = 1;                 // Enable the ADC
@@ -139,14 +157,6 @@ void main(void)
         uiHeaderZeroCount = 0;
 	IEC0bits.T1IE = 1;
 //	uc_Main_Case_Index = 0;
-
-
-
-*/
-}
-
-void initialize(void){
-  //WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
 
   /*P1DIR = 0xFF; //(nov 13th)0xFF;           // All P1.x outputs
   P1OUT = 0;                                // All P1.x reset
@@ -188,8 +198,9 @@ void calibrate(void){
     //Is it being calibrated with a camera?
     waitForStartBit();
     for(int i(0); i<6; i++){
-        goal[0][i] = input[i]; //intialize start bit
+        goal[0][i] = input[i]; //set start position and straight orientation
     }
+    ascend(-1,1);
 
 }
 
@@ -204,16 +215,14 @@ void go(void) {
                 spaceAbs[j] = spaceAbs[j] + spaceRel[j];
             }
 
-            //Recalculate every how much distance? Does it waste more power to keep changing motor speeds
-
-
-            //??calculate the forces and torques on the helicopter based on previous values
-
             //Desired position/orientation
             goal[][];
-
+            //Recalculate every how much distance? Does it waste more power to keep changing motor speeds
+            //Recalculate every how much distance? Or does it waste more power
+            //??calculate the forces and torques on the helicopter based on previous values
             //use PID to establish how much to to pulse motor
 
+            setMot(1,)
             //tell motor 1 what to do
             TB02 = 0;
 
@@ -232,7 +241,8 @@ void go(void) {
 
             //tell Green LED what to do
             //RA2
-            if(BAT_LOW){
+
+            if(batLow){
                 land();
             }
             //do something if battery low (land) or very low (shut off)
@@ -242,16 +252,23 @@ void go(void) {
             //Vision System
             //Object Detection
         }
-}//;
+}
 
-void flatten(void){
-    while (notFlat){
-    //check speed
-    //check acceleration
-    //check orientation
-    //space[] = checkPos();
+int camSensor(void){
+    //read camera sensor
+    return distToGround;
+}
+
+void flatten(void){             //***********Check sensitivity to prevent vibrating
+    while(xAng !=0 && yAng !=0){
+        if (xAng<0){
+
+        }
+          //check speed
+        //check acceleration
+        //check orientation
+        //space[] = checkPos();
         //if space[1].isCloseTo
-
     }
 }
 
@@ -265,17 +282,88 @@ void land(void){
     descend(-1); //Descend to ground
 
 }
-
-void descend(int height){ //descends at constant speed to height
+void ascend(int height, int speed){
+    //ascent to height "height" at a speed of "speed"
+    if(height == -1){
+        //rise to an inch above ground
+    }
+    incAll(speed);
+}
+void descend(int height, int speed){ //descends at constant speed to height
     if(height = -1){
+        while(camSensor()>1){
+
+        }
         //decrease until cameras sense ground 2 inches away
-        slowAll(0, 0, 0);
+        decAll(speed); //PID?
     }else{
-        descend to height
+        //descend to height
     }
 }
 
-void slowAll(int M1Speed, int M2Speed, int M3Speed){
-    while(slowM1(0);
-    slowM2()
+void incAll(int speed){
+    if(retMot(1)<speed){
+        M1++;
+    }
+    if(retMot(2)<speed){
+        M2++;
+    }
+    if(retMot(3)<speed){
+        M3++;
+    }
+    if(retMot(4)<speed){
+        M4++;
+    }
+    if(retMot(5)<speed){
+        M5++;
+    }
+    if(retMot(6)<speed){
+        M6++;
+    }
+}
+
+void decAll(int speed){
+    if(retMot(1)>speed){
+        M1--;
+    }
+    if(retMot(2)>speed){
+        M2--;
+    }
+    if(retMot(3)>speed){
+        M3--;
+    }
+    if(retMot(4)>speed){
+        M4--;
+    }
+    if(retMot(5)>speed){
+        M5--;
+    }
+    if(retMot(6)>speed){
+        M6--;
+    }
+}
+
+void flatten(void){
+    while (xAng != 0 && yAng != 0){
+    //check speed
+    //check acceleration
+    //check orientation
+    //space[] = checkPos();
+        //if space[1].isCloseTo
+
+    }
+}
+
+void setMot(int motNum, motSpeed){
+    motSpeed[motNum-1] = motSpeed; //**********Arithmetic to determine what is sent to motor
+}
+
+int retMot(int motNum){
+    return motSpeed[motNum-1];
+}
+
+void delay(int delTime){
+    for(int z(0); z<delTime; z++){
+        //delay
+    }
 }
