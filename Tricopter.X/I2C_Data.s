@@ -59,7 +59,7 @@ CHECKTRANSMIT
 ACKWAIT
     btsc I2CSTAT, #bit15
     GOTO ACKWAIT
-    
+
     ;send slave register address
     mov 0b00111011, w1
     mov w1, I2CTRN
