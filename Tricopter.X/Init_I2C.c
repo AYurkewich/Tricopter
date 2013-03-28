@@ -15,7 +15,7 @@ void Init_I2C(void)
  //5. [Optionally, send any further data bytes]
  //6. Send the stop sequence.
 
- //to read from save device:
+ //to read from slave device:
  //1. Send a start sequence
  //2. Send 0xC0 ( I2C address of the CMPS03 with the R/W bit low (even address)
  //3. Send 0x01 (Internal address of the bearing register)
