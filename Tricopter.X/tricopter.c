@@ -14,14 +14,15 @@
  * MAKE PWM
  * create stdio, math, stdlib.h files?
  * check directions of all acc/dir, and whether they should be x or y
+ * delay: (http://www.programmingsimplified.com/c/dos.h/delay)
  * */
 
-# include <stdio.h>
-# include <math.h>
-# include <stdlib.h>
+#include <TIME.H>
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 #include "Micros_h_File.h"
 #include "Init_Declarations.h"
-
 #include "Configutation_Bits_File.h"
 
 /*********************************************************
@@ -138,7 +139,7 @@ void incAll(void);
 void decAll(void);
 void setMot(void);
 void retMot(void);
-void delay(int);
+//void delay(int);
 
 
 
@@ -202,13 +203,13 @@ void main(void) {
     //Initialize registers and ports
     //Pressing button gives power to micro and starts it
     initialize();
-    delay(3sec); //Delay??
+    Sleep(3000); //3 second delay
     if (testing) {
         for (int i(0); i < 6; i++) {
             motors[i] = halfSpeed;
-            delay(4sec);
+            Sleep(4000);
             motors[i] = 0;
-            delay(4sec);
+            Sleep(4000);
         }
     } else{
         go();
@@ -313,7 +314,7 @@ void go(void) {
     //while(buttonHiLo);
 
     //STEP TWO: Wait 3 seconds for clearance
-    delay(3sec);
+    Sleep(3000);
 
     //STEP THREE: Save start position and orientation
     if(calibrating){
@@ -330,7 +331,7 @@ void go(void) {
     stabilize(.2);
 
     //STEP FIVE: Wait 5 seconds to stabilize
-    delay(5sec);
+    Sleep(5000);
 
     //STEP SIX: Go to first destination point, stop 5 seconds, repeat for next goals
     for (int i(0); i < numGoals; i++) {   //cycle through goals, first "goal" is calibration step
@@ -484,7 +485,7 @@ void descend(int height, int speed){ //descends at constant speed to height
         Motor4 += speed;
         Motor5 += speed;
         Motor6 += speed;
-        delay(1sec)
+        delay(1000)
     }
 }
 
@@ -538,11 +539,11 @@ int retMot(int motNum){
     return motSpeed[motNum-1];
 }
 
-void delay(int delTime){
+/*void delay(int delTime){
     for(int z(0); z<delTime; z++){
         //delay
     }
-}
+}*/
 
 //3D Motion Tracking
 //Initialize all at 0 on start
