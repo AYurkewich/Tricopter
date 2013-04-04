@@ -175,7 +175,7 @@ I2CTRN = 0x0000;
 ///receive initialization
 I2CRCV = 0x0000;
 
-AccXOLD=0;
+
 ///I2C STATUS REGISTER///
 //bit 15, 1=NACK received from slave (Check for 0 meaning slave acknowledges transmit)
 //bit 14, Master transmit in progress
@@ -264,8 +264,9 @@ void ACCGYRODATA(int *AccX, int *AccY, int *AccZ, int *Temperature, int *GyroX, 
     
     //receive Accelerometer X1 data
     AccX1= I2CRCV ;
+     while (I2CSTATbits.RBF==0);
     //I2CSTATbits.RBF=1 when receive complete
-    while (I2CSTATbits.RBF==0);
+    while (I2CSTATbits.RBF);
 
     //send ACK
     SENDACK();
@@ -281,6 +282,7 @@ void ACCGYRODATA(int *AccX, int *AccY, int *AccZ, int *Temperature, int *GyroX, 
     SENDACK();
     //receive Accelerometer Y1 data
     AccY1= I2CRCV ;
+ ``;;;;;
     //I2CSTATbits.RBF=1 when receive complete
     while (I2CSTATbits.RBF==0);
 

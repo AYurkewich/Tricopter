@@ -17,4 +17,6 @@ void init_PWM(void)
 	//IOCON1bits.POLH = 0;                  	// Drive signals are active-high
 	//IOCON1bits.PMOD=1;				// PWM pair works in Independent Mode
 	//PWMCON1bits.ITB = 1;				// Select Independent Timebase mode
+
+
 }
