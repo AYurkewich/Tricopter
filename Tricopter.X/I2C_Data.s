@@ -12,14 +12,12 @@ CHECKSTART:
     GOTO CHECKSTART
     Return
 
-
 I2CSTOPSEQ:
     bset   I2CCON,#3
 CHECKSTOP:
     btsc I2CCON,#3
     GOTO CHECKSTOP
     Return
-
 
 I2CREPEATSTART:
     bset I2CCON, #2
@@ -87,7 +85,7 @@ ACKWAIT2:
     ;;I2CREPEATSTARTFINISHED
 
     ;send slave address + Read bit
-    mov .68, w1
+    mov b11010000, w1
     mov w1, I2CTRN
     ;wait for transmit to complete
 CHECKTRANSMIT2:
@@ -140,16 +138,14 @@ Call CLEARRECEIVEWAIT
     ;;I2CSENDACKFINISHED
 ;END OF REPEATING SEQUENCE for AccX
 
-
-
 ;START OF REPEATING SEQUENCE for AccY
 ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
 
 ;receive Accelerometer Y1 data
     mov I2CRCV, w1
 
-Call CLEARRECEIVEWAIT
+    Call CLEARRECEIVEWAIT
 
     mov w1, AccY1
 
@@ -175,8 +171,6 @@ Call CLEARRECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 ;;END OF REPEATING SEQUENCE for AccY
-
-
 
 ;START OF REPEATING SEQUENCE for AccZ
 ;I2CSTATbits.RBF=1 when receive complete
@@ -359,8 +353,6 @@ Call CLEARRECEIVEWAIT
     ;;I2CSENDACKFINISHED
 ;END OF REPEATING SEQUENCE for GyroZ
 /*END OF FULL REPEATED SEQUENCE*/
-
-
 
 ;send nack
 Call I2CSENDNACK
