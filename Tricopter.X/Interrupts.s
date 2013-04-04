@@ -32,8 +32,8 @@ __T1Interrupt:
 ;get accelerometer values
 ;get gyro values
 
-GOTO GETACCTEMPGYRODATA
-I2CDATATRANSMISSIONCOMPLETE
+Call GETACCTEMPGYRODATA
+
 
 ;make accelerometer average
 mov AccX, WREG

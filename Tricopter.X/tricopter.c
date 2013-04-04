@@ -25,6 +25,7 @@
 #include "Init_Declarations.h"
 #include "Configutation_Bits_File.h"
 
+
 /*********************************************************
  * PORT DESIGNATIONS
  * Motor Signals: RB2 - RB7
@@ -91,20 +92,26 @@
 #define LB13    LATBbits.LATB13 //
 #define LB14    LATBbits.LATB14 //
 #define LB15    LATBbits.LATB15 //
-
+#define numGoalsRow 2; //Number of set goals
+#define numGoalsColumn 6;
 //VARIABLE DEFINITIONS
-int xPos, yPos, zPos, xAng, yAng, zAng; 
-volatile unsigned int spaceAbs[6] = {xPos, yPos, zPos, xAng, yAng, zAng}; //Absolute Pos/Orientation array
-int xPosD, yPosD, zPosD, xAngD, yAngD, zAngD; 
-volatile unsigned int spaceDes[6] = {xPosD, yPosD, zPosD, xAngD, yAngD, zAngD}; //Destination Pos/Orientation array
-int xPosR, yPosR, zPosR, xAngR, yAngR, zAngR;
-volatile unsigned int spaceRel[6] = {xPosR, yPosR, zPosR, xAngR, yAngR, zAngR}; //Relative Pos/Orientation array
-int xPosIn, yPosIn, zPosIn, xAngIn, yAngIn, zAngIn;                              
-volatile unsigned int input[6] = {xPosIn, yPosIn, zPosIn, xAngIn, yAngIn, zAngIn}; //accel and gyro input placeholders
-int xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal;                              
-volatile unsigned int spaceCal[6] = {xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal}; //accel and gyro input placeholders
-volatile unsigned int motSpeed[6];
-volatile unsigned int batLow;
+typedef struct {int xPos, yPos, zPos, xAng, yAng, zAng;}SpaceAbs;
+SpaceAbs spaceAbs;
+
+typedef struct {int xPosD, yPosD, zPosD, xAngD, yAngD, zAngD;}SpaceDes;
+SpaceDes spaceDes;
+
+typedef struct {int xPosR, yPosR, zPosR, xAngR, yAngR, zAngR;}SpaceRel;
+SpaceRel spaceRel;
+
+typedef struct {int xPosIn, yPosIn, zPosIn, xAngIn, yAngIn, zAngIn;}Input;
+Input input;
+
+typedef struct {int xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal;}SpaceCal;
+SpaceCal spaceCal;
+
+unsigned int motSpeed[6];
+unsigned int batLow;
 int ms;
 int distToGround;
 int motors[6] = {0,0,0,0,0,0};
@@ -114,26 +121,20 @@ int GyroXdeg, GyroYdeg, GyroZdeg;
 int Pi = 3.141592654;
 
 //SET GOALS
-int numGoals = 2; //Number of set goals
-volatile unsigned int goal[numGoals][6];
+int goal[2][6];
 //volatile unsigned int goal[0][6]; //set in calibrate method
-int goal[1][0]= 5 ; //position 1
-int goal[1][1]= 3; //position 2
-int goal[1][2]= -2; //position 3
-int goal[1][3]= 0; //position 4
-int goal[1][4]= 6; //position 5
-int goal[1][5]= -10; //position 5
+
 //volatile unsigned int goal1[6] = {};
 
 //DECLARE FUNCTIONS
 void initialize(void);
-void testing(void);
+void test(void);
 void calibrate(void);
 void go(void);
-void camSensor(void);
+int camSensor(void);
 void flatten(void);
 void land(void);
-void ascend(void);
+void ascend(int height, int speed);
 void descend(void);
 void incAll(void);
 void decAll(void);
@@ -184,7 +185,7 @@ int Kd = 3; //Constant Kd
  * int KdGyroY;
  * int KdGyroZ; */
 int GyroCoeff = .98;
-int AccCoeff = 1-GyroCoeff;
+
 //Z-Spin offsets between each motor of a pair
 int motor12Offset = 0;
 int motor34Offset = 0;
@@ -199,17 +200,25 @@ int pathDiv = 0;        //Acceptable divergence from path
 
 
 //Main: Initialize, Testing, Start
-void main(void) {
-    //Initialize registers and ports
+int main(void) {
+    goal [1][0]= 5; //position 1
+    goal [1][1]= 3; //position 2
+    goal [1][2]= -2; //position 3
+    goal [1][3]= 0; //position 4
+    goal [1][4]= 6; //position 5
+    goal [1][5]= -10; //position 5
+//    int AccCoeff = 1-GyroCoeff;
+//Initialize registers and ports
     //Pressing button gives power to micro and starts it
     initialize();
-    Sleep(3000); //3 second delay
+   // SLEEP(3000); //3 second delay
     if (testing) {
-        for (int i(0); i < 6; i++) {
+       int i=0;
+        for (i=0; i < 6; i++) {
             motors[i] = halfSpeed;
-            Sleep(4000);
+            //Sleep(4000); This puts the micro to sleep - instead count the number of times the interrupt happens
             motors[i] = 0;
-            Sleep(4000);
+           // Sleep(4000);
         }
     } else{
         go();
@@ -290,54 +299,54 @@ void calibrate(void){
     //goal[0][3]= xAng;
     //goal[0][4]= yAng;
     //goal[0][5]= zAng;
-    Xabs = 0;
-    Yabs = 0;
-    Zabs = 0;
+    int Xabs = 0;
+    int Yabs = 0;
+    int Zabs = 0;
     /*in degrees*/
-    aXabs = 0;
-    aYabs = 0;
-    aZabs = 0;
+    int aXabs = 0;
+    int aYabs = 0;
+    int aZabs = 0;
     /*in feet*/
-    Xref = 0;
-    Yref = 0;
-    Zref = 0;
+    int Xref = 0;
+    int Yref = 0;
+    int Zref = 0;
     /*in degrees*/
-    aXref = 0; //tilt down
-    aYref = 0; //tilt left
-    aZref = 0;
+    int aXref = 0; //tilt down
+    int aYref = 0; //tilt left
+    int aZref = 0;
 }
 
 //Flight Sequence
-void go(void) {
+/*void go(void) {
     //STEP ONE: Start sequence (w or w/o button) to start
     //ALT: Just use fact that button turns on power
     //while(buttonHiLo);
 
     //STEP TWO: Wait 3 seconds for clearance
-    Sleep(3000);
+    //Sleep(3000);
 
     //STEP THREE: Save start position and orientation
     if(calibrating){
         calibrate();
         //store in memory
-    }
+    }*/
     /*STEP FOUR: Rise to 2 inches
         i.   slowly increase each motor "simultaneously"
         ii.  if acc/gyr is not level, increase other motors correspondingly
                 -parabolic velocity graph
         iii. stop and hover at 2 inches
      */
-    ascend(.2, 2); //rise to 0.2' at a speed of 2 (1-5)
+  /*  ascend(.2, 2); //rise to 0.2' at a speed of 2 (1-5)
     stabilize(.2);
 
     //STEP FIVE: Wait 5 seconds to stabilize
-    Sleep(5000);
+    //Sleep(5000);
 
     //STEP SIX: Go to first destination point, stop 5 seconds, repeat for next goals
-    for (int i(0); i < numGoals; i++) {   //cycle through goals, first "goal" is calibration step
-        for (int j = 0; j < 6; j++) {
-            if(i = 0){
-                goal[0][i];
+    //for (int i(0); i < numGoals; i++) {   //cycle through goals, first "goal" is calibration step
+      //  for (int j = 0; j < 6; j++) {
+        //    if(i = 0){
+          //goal[0][i];
             }else{
             //Take 6 inputs from accelerometer and gyro into input[]
             //Create 6 coordinate system
@@ -346,8 +355,9 @@ void go(void) {
             spaceAbs[j] = spaceAbs[j] + spaceRel[j];
             }
         }
+
         //Desired position/orientation
-        goal[][];
+       // goal[][];
         //??calculate the forces and torques on the helicopter based on previous values
         //use PID to establish how much to to pulse motor
         setMot(1,)
@@ -372,16 +382,16 @@ void go(void) {
             land();
         }
         //do something if battery low (land) or very low (shut off)
-
+*/
         /* Future stuff */
         //Vision System
         //Object Detection
-    }
+ /*   }
 
     //STEP SEVEN: Land safely
     land();
 }
-
+*/
 //Read Camera to detect ground, obstacles, USB
 int camSensor(void){
     //read camera sensor
