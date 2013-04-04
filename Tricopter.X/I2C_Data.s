@@ -58,8 +58,10 @@ GETACCTEMPGYRODATA:
     ;start seq
     Call I2CSTARTSEQ
     
-    ;;;;;;is this the right value? ;send slave address(1101000) + Write bit(0)
-    mov b11010000, w1
+    ;;;;;;is I2CSTAT #2 right to use/correct order? ;send slave address(1101000) + Write bit(0)
+
+    mov b1101000, w1
+    bclr I2CSTAT, #2
     mov w1, I2CTRN
     ;wait for transmit to complete
 CHECKTRANSMIT1:
@@ -85,7 +87,8 @@ ACKWAIT2:
     ;;I2CREPEATSTARTFINISHED
 
     ;send slave address + Read bit
-    mov b11010000, w1
+    mov b1101000, w1
+    bset I2CSTAT, #2
     mov w1, I2CTRN
     ;wait for transmit to complete
 CHECKTRANSMIT2:
