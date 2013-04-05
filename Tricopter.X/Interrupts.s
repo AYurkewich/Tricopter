@@ -31,14 +31,55 @@ __T1Interrupt:
 
 ;get accelerometer values
 ;get gyro values
+Call PWMSET
 
 Call GETACCTEMPGYRODATA
 
 
+/* NOW IN I2C Data
+
 ;make accelerometer average
 mov AccX, WREG
 add AccXOLD
+RRNC AccXOLD
 
+mov AccY, WREG
+add AccYOLD
+RRNC AccYOLD
+
+mov AccZ, WREG
+add AccZOLD
+RRNC AccZOLD
+
+mov Temperature, WREG
+add TemperatureOLD
+RRNC TemperatureOLD
+
+mov AccX, WREG
+add AccXOLD
+RRNC AccXOLD
+
+mov AccX, WREG
+add AccXOLD
+RRNC AccXOLD
+
+mov AccX, WREG
+add AccXOLD
+RRNC AccXOLD
+
+mov AccX, WREG
+add AccXOLD
+RRNC AccXOLD
+
+mov AccX, WREG
+add AccXOLD
+RRNC AccXOLD
+
+mov AccX, WREG
+add AccXOLD
+RRNC AccXOLD
+
+*/
 
 ;make gyro average
 

@@ -90,7 +90,18 @@ int GyroY1;
 int GyroY2;
 int GyroZ1;
 int GyroZ2;
-
-int AccXOLD;
+int motor1=0;
+int motor2=0;
+int motor3=0;
+int motor4=0;
+int motor5=0;
+int motor6=0;
+int AccXOLD=0;
+int AccYOLD=0;
+int AccZOLD=0;
+int TemperatureOLD=0;
+int GyroXOLD=0;
+int GyroYOLD=0;
+int GyroZOLD=0;
 
 #endif

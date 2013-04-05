@@ -114,7 +114,13 @@ unsigned int motSpeed[6];
 unsigned int batLow;
 int ms;
 int distToGround;
-int motors[6] = {0,0,0,0,0,0};
+int motor1 = 0;
+int motor2 = 0;
+int motor3 = 0;
+int motor4 = 0;
+int motor5 = 0;
+int motor6 = 0;
+
 int motorStable[6] = {0,0,0,0,0,0};
 int AccXdeg, AccYdeg, AccZdeg, AccXdegEff, AccYdegEff, AccZdegEff;
 int GyroXdeg, GyroYdeg, GyroZdeg;

@@ -142,19 +142,19 @@ void Init_I2C(void)
 I2CCONbits.I2CEN=1;
 //bit 14, unimplemented
 //bit 13,stop module when PIC is in idle
-I2CCONbits.I2CSIDL=1;
+I2CCONbits.I2CSIDL=0;
 //bit 12, (when being used as slave)?
-I2CCONbits.SCLREL=1;
+I2CCONbits.SCLREL=0;
 //bit 11, Acknowledge all addresses?
-I2CCONbits.IPMIEN=0;
+I2CCONbits.IPMIEN=1;
 //bit 10,Invensense chip has a 7 bit slave address
 I2CCONbits.A10M=0;
 //bit 9, slew rate control disabled
-I2CCONbits.DISSLW=1;
+I2CCONbits.DISSLW=0;
 //bit 8, enable I/O thresholds
 I2CCONbits.SMEN=1;
 //bit 7, module enabled for reception
-I2CCONbits.GCEN=1;
+I2CCONbits.GCEN=0;
 //bit 6, (when being used as slave)?
 I2CCONbits.STREN=0;
 //bit 5,Send NACK when data recieved

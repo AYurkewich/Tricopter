@@ -72,4 +72,20 @@
     .equiv GyroY2, 0x0000
     .equiv GyroZ1, 0x0000
     .equiv GyroZ2, 0x0000
-    .equiv AccOLD, 0x0000
+    .equiv AccXOLD, 0x0000
+    .equiv AccYOLD, 0x0000
+    .equiv AccZOLD, 0x0000
+    .equiv TemperatureOLD, 0x0000
+    .equiv GyroXOLD, 0x0000
+    .equiv GyroYOLD, 0x0000
+    .equiv GyroZOLD, 0x0000
+
+
+    .equiv motor1, 0x0000
+    .equiv motor2, 0x0000
+    .equiv motor3, 0x0000
+    .equiv motor4, 0x0000
+    .equiv motor5, 0x0000
+    .equiv motor6, 0x0000
+
+

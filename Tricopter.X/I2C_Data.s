@@ -6,23 +6,23 @@
 
 ;Start sequence includes setting I2CCON
 I2CSTARTSEQ:
-    bset   I2CCON,#1
+    bset   I2CCON,#0
 CHECKSTART:
-    btsc I2CCON,#1
+    btsc I2CCON,#0
     GOTO CHECKSTART
     Return
 
 I2CSTOPSEQ:
-    bset   I2CCON,#3
+    bset   I2CCON,#2
 CHECKSTOP:
-    btsc I2CCON,#3
+    btsc I2CCON,#2
     GOTO CHECKSTOP
     Return
 
 I2CREPEATSTART:
-    bset I2CCON, #2
+    bset I2CCON, #1
 CHECKREPEAT:
-    btsc I2CCON, #2
+    btsc I2CCON, #1
     GOTO CHECKREPEAT
     Return
 
@@ -43,6 +43,7 @@ CHECKSENDACK:
     Return
 
 RECEIVEWAIT:
+    bset I2CCON, #3
     btss I2CSTAT, #1
     GOTO RECEIVEWAIT
     Return
@@ -59,10 +60,10 @@ GETACCTEMPGYRODATA:
     Call I2CSTARTSEQ
     
     ;;;;;;is I2CSTAT #2 right to use/correct order? ;send slave address(1101000) + Write bit(0)
-
-    mov b1101000, w1
-    bclr I2CSTAT, #2
+    mov b11010000, w1
+  ;  btsc I2CSTAT, #2
     mov w1, I2CTRN
+
     ;wait for transmit to complete
 CHECKTRANSMIT1:
     btsc I2CSTAT, #0
@@ -73,32 +74,46 @@ ACKWAIT1:
     btsc I2CSTAT, #15
     GOTO ACKWAIT1
 
+TRANSMITCOMPLETE1:
+    btsc I2CSTAT, #14
+    GOTO TRANSMITCOMPLETE1
+
     ;send slave register address
     mov .59, WREG  ;;why doesnt this work? start with a 1?
     mov WREG, I2CTRN
 
+CHECKTRANSMIT1:
+    btsc I2CSTAT, #0
+    GOTO CHECKTRANSMIT1
     ;wait for acknowledge
 ACKWAIT2:
     btsc I2CSTAT, #15
     GOTO ACKWAIT2
+
+TRANSMITCOMPLETE2:
+    btsc I2CSTAT, #14
+    GOTO TRANSMITCOMPLETE2
 
     ;Repeated Start
     Call I2CREPEATSTART
     ;;I2CREPEATSTARTFINISHED
 
     ;send slave address + Read bit
-    mov b1101000, w1
-    bset I2CSTAT, #2
+    mov b11010001, w1
+   ; btsc I2CSTAT, #2
     mov w1, I2CTRN
     ;wait for transmit to complete
-CHECKTRANSMIT2:
+CHECKTRANSMIT3:
     btsc I2CSTAT, #0
-    GOTO CHECKTRANSMIT2
+    GOTO CHECKTRANSMIT3
 
     ;wait for acknowledge
 ACKWAIT3:
     btsc I2CSTAT, #15
     GOTO ACKWAIT3
+TRANSMITCOMPLETE3:
+    btsc I2CSTAT, #14
+    GOTO TRANSMITCOMPLETE3
 
 /**REPEAT THE FOLLOWING SEQUENCE FOR ALL ACC TEMP AND GYRO
 ;Description: Take both bytes for each x,y,z coordinate (x1, x2) and add them
@@ -110,32 +125,42 @@ ACKWAIT3:
 Call RECEIVEWAIT
 
 ;receive Accelerometer X1 data
-    mov I2CRCV, w1
-
-Call CLEARRECEIVEWAIT
-
-    mov w1, AccX1
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Wb=w1, Wns=w2, Wnd=w3
+    mov I2CRCV, W1
+    Call CLEARRECEIVEWAIT
+    mov 8, W2
+    ;Wnd=Left shift Wb by Wns
+    SL W1, W2, W3
+    mov W3, AccX1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
     ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
    
-
     ;receive Accelerometer X2 data
     mov I2CRCV, WREG
 
-Call CLEARRECEIVEWAIT
+    Call CLEARRECEIVEWAIT
 
-;add AccX1 to AccX2
+    ;add AccX1 to AccX2
+
+;;;;;;;;;;;;;;;;;;;;;
     add AccX1
     RRNC AccX1
-    ;Acculmulated AccelerometerX value
+    RRNC AccXOLD
     mov AccX1, WREG
+    add AccXOLD, WREG
     mov WREG, AccX
+;;;;;;;;;;;;;;;;;;;;;;
 
+    ;Acculmulated AccelerometerX value
+    
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
@@ -146,11 +171,16 @@ Call CLEARRECEIVEWAIT
     Call RECEIVEWAIT
 
 ;receive Accelerometer Y1 data
-    mov I2CRCV, w1
 
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Wb=w1, Wns=w2, Wnd=w3
+    mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-
-    mov w1, AccY1
+    mov 8, W2
+    ;Wnd=Left shift Wb by Wns
+    SL W1, W2, W3
+    mov W3, AccY1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
@@ -164,12 +194,15 @@ Call RECEIVEWAIT
 
 Call CLEARRECEIVEWAIT
 
-;add AccY1 to AccY2
+;;;;;;;;;;;;;;;;;;;;;
     add AccY1
     RRNC AccY1
-    ;Acculmulated AccelerometerY value
+    RRNC AccYOLD
     mov AccY1, WREG
+    add AccYOLD, WREG
     mov WREG, AccY
+;;;;;;;;;;;;;;;;;;;;;;
+
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
@@ -180,30 +213,38 @@ Call CLEARRECEIVEWAIT
 Call RECEIVEWAIT
    
 ;receive Accelerometer Z1 data
-    mov I2CRCV, w1
 
-Call CLEARRECEIVEWAIT
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Wb=w1, Wns=w2, Wnd=w3
 
-    mov w1, AccZ1
+    mov I2CRCV, W1
+    Call CLEARRECEIVEWAIT
+    mov 8, W2
+    ;Wnd=Left shift Wb by Wns
+    SL W1, W2, W3
+    mov W3, AccZ1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
     ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
 
    ;receive Accelerometer Z2 data
-   mov I2CRCV, WREG
+    mov I2CRCV, WREG
 
-Call CLEARRECEIVEWAIT
+    Call CLEARRECEIVEWAIT
 
-;add AccZ1 to AccZ2
+;;;;;;;;;;;;;;;;;;;;;
     add AccZ1
     RRNC AccZ1
-    ;Acculmulated AccelerometerZ value
+    RRNC AccZOLD
     mov AccZ1, WREG
+    add AccZOLD, WREG
     mov WREG, AccZ
+;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
@@ -217,32 +258,37 @@ Call CLEARRECEIVEWAIT
 Call RECEIVEWAIT
 
 ;receive Temperature1 data
-    mov I2CRCV, w1
 
-Call CLEARRECEIVEWAIT
-
-    mov w1, Temperature1
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Wb=w1, Wns=w2, Wnd=w3
+    mov I2CRCV, W1
+    Call CLEARRECEIVEWAIT
+    mov 8, W2
+    ;Wnd=Left shift Wb by Wns
+    SL W1, W2, W3
+    mov W3, Temperature1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
     ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
 
     ;receive Temperature2 data
     mov I2CRCV, WREG
 
-Call CLEARRECEIVEWAIT
+    Call CLEARRECEIVEWAIT
 
+     ;;;;;;;;;;;;;;;;;;;;;
     add Temperature1
     RRNC Temperature1
-
-    ;Acculmulated Temperature value
-    ;Temperature= Temperature1<<8+Temperature2;
-;;;;;;;;;;    mov w3, WREG
+    RRNC TemperatureOLD
     mov Temperature1, WREG
+    add TemperatureOLD, WREG
     mov WREG, Temperature
+;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
@@ -253,33 +299,40 @@ Call CLEARRECEIVEWAIT
 
 ;START OF REPEATING SEQUENCE for GyroX
 ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
 
 ;receive GYROX1 data
-    mov I2CRCV, w1
 
-Call CLEARRECEIVEWAIT
-
-    mov w1, GyroX1
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Wb=w1, Wns=w2, Wnd=w3
+    mov I2CRCV, W1
+    Call CLEARRECEIVEWAIT
+    mov 8, W2
+    ;Wnd=Left shift Wb by Wns
+    SL W1, W2, W3
+    mov W3, GyroX1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
     ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
 
     ;receive Gyro X2 data
     mov I2CRCV, WREG
 
-Call CLEARRECEIVEWAIT
+    Call CLEARRECEIVEWAIT
 
+;;;;;;;;;;;;;;;;;;;;;
     add GyroX1
     RRNC GyroX1
-    ;Acculmulated GyroX value
-    ;GyroX= GyroX1<<8+GyroX2;
+    RRNC GyroXOLD
     mov GyroX1, WREG
+    add GyroXOLD, WREG
     mov WREG, GyroX
+;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
@@ -290,31 +343,40 @@ Call CLEARRECEIVEWAIT
 
 ;START OF REPEATING SEQUENCE for GyroY
 ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
 
 ;receive Gyro Y1 data
-    mov I2CRCV, w1
 
-Call CLEARRECEIVEWAIT
-
-    mov w1, GyroY1
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Wb=w1, Wns=w2, Wnd=w3
+    mov I2CRCV, W1
+    Call CLEARRECEIVEWAIT
+    mov 8, W2
+    ;Wnd=Left shift Wb by Wns
+    SL W1, W2, W3
+    mov W3, GyroY1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
     ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
  
     ;receive Gyro Y2 data
     mov I2CRCV, WREG
 
-Call CLEARRECEIVEWAIT
+    Call CLEARRECEIVEWAIT
 
+;;;;;;;;;;;;;;;;;;;;;
     add GyroY1
     RRNC GyroY1
+    RRNC GyroYOLD
     mov GyroY1, WREG
+    add GyroYOLD, WREG
     mov WREG, GyroY
+;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
@@ -325,31 +387,40 @@ Call CLEARRECEIVEWAIT
 
 ;START OF REPEATING SEQUENCE for GyroZ
 ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
    
 ;receive GyroZ1 data
-    mov I2CRCV, w1
 
-Call CLEARRECEIVEWAIT
-
-    mov w1, GyroZ1
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Wb=w1, Wns=w2, Wnd=w3
+    mov I2CRCV, W1
+    Call CLEARRECEIVEWAIT
+    mov 8, W2
+    ;SL  Wb,Wns,Wnd   Wnd=Left shift Wb by Wns
+    SL W1, W2, W3
+    mov W3, GyroZ1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
     ;I2CSTATbits.RBF=1 when receive complete
-Call RECEIVEWAIT
+    Call RECEIVEWAIT
 
     ;receive Gyro Z2 data
     mov I2CRCV, WREG
 
-Call CLEARRECEIVEWAIT
+    Call CLEARRECEIVEWAIT
    
+;;;;;;;;;;;;;;;;;;;;;
     add GyroZ1
     RRNC GyroZ1
+    RRNC GyroZOLD
     mov GyroZ1, WREG
+    add GyroZOLD, WREG
     mov WREG, GyroZ
+;;;;;;;;;;;;;;;;;;;;;;
 
     ;send ACK
     Call I2CSENDACK
