@@ -82,9 +82,9 @@ TRANSMITCOMPLETE1:
     mov .59, WREG  ;;why doesnt this work? start with a 1?
     mov WREG, I2CTRN
 
-CHECKTRANSMIT1:
+CHECKTRANSMIT2:
     btsc I2CSTAT, #0
-    GOTO CHECKTRANSMIT1
+    GOTO CHECKTRANSMIT2
     ;wait for acknowledge
 ACKWAIT2:
     btsc I2CSTAT, #15
