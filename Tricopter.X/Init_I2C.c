@@ -176,6 +176,7 @@ I2CTRN = 0x0000;
 I2CRCV = 0x0000;
 
 
+
 ///I2C STATUS REGISTER///
 //bit 15, 1=NACK received from slave (Check for 0 meaning slave acknowledges transmit)
 //bit 14, Master transmit in progress

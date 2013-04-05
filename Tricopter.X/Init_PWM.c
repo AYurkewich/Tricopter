@@ -54,5 +54,11 @@ void init_PWM(void)
 	//IOCON1bits.PMOD=1;				// PWM pair works in Independent Mode
 	//PWMCON1bits.ITB = 1;				// Select Independent Timebase mode
 
+        TRISBbits.TRISB2=0;
+        TRISBbits.TRISB3=0;
+        TRISBbits.TRISB4=0;
+        TRISBbits.TRISB5=0;
+        TRISBbits.TRISB6=0;
+        TRISBbits.TRISB7=0;
 
 }

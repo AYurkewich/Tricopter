@@ -6,50 +6,50 @@
 
 ;Start sequence includes setting I2CCON
 I2CSTARTSEQ:
-    bset   I2CCON,#0
+    bset   I2CCONbits,#0
 CHECKSTART:
-    btsc I2CCON,#0
+    btsc I2CCONbits,#0
     GOTO CHECKSTART
     Return
 
 I2CSTOPSEQ:
-    bset   I2CCON,#2
+    bset   I2CCONbits,#2
 CHECKSTOP:
-    btsc I2CCON,#2
+    btsc I2CCONbits,#2
     GOTO CHECKSTOP
     Return
 
 I2CREPEATSTART:
-    bset I2CCON, #1
+    bset I2CCONbits, #1
 CHECKREPEAT:
-    btsc I2CCON, #1
+    btsc I2CCONbits, #1
     GOTO CHECKREPEAT
     Return
 
 I2CSENDNACK:
-    bset I2CCON, #5
-    bset I2CCON, #4
+    bset I2CCONbits, #5
+    bset I2CCONbits, #4
 CHECKSENDNACK:
-    btsc I2CCON, #4
+    btsc I2CCONbits, #4
     GOTO CHECKSENDNACK
     Return
 
 I2CSENDACK:
-    bclr I2CCON, #5
-    bset I2CCON, #4
+    bclr I2CCONbits, #5
+    bset I2CCONbits, #4
 CHECKSENDACK:
-    btsc I2CCON, #4
+    btsc I2CCONbits, #4
     GOTO CHECKSENDACK
     Return
 
 RECEIVEWAIT:
-    bset I2CCON, #3
-    btss I2CSTAT, #1
+    bset I2CCONbits, #3
+    btss I2CSTATbits, #1
     GOTO RECEIVEWAIT
     Return
 
 CLEARRECEIVEWAIT:
-    btsc I2CSTAT, #1
+    btsc I2CSTATbits, #1
     GOTO CLEARRECEIVEWAIT
     Return
 
@@ -61,37 +61,37 @@ GETACCTEMPGYRODATA:
     
     ;;;;;;is I2CSTAT #2 right to use/correct order? ;send slave address(1101000) + Write bit(0)
     mov b11010000, w1
-  ;  btsc I2CSTAT, #2
+  ;  btsc I2CSTATbits, #2
     mov w1, I2CTRN
 
     ;wait for transmit to complete
 CHECKTRANSMIT1:
-    btsc I2CSTAT, #0
+    btsc I2CSTATbits, #0
     GOTO CHECKTRANSMIT1
 
     ;wait for acknowledge
 ACKWAIT1:
-    btsc I2CSTAT, #15
+    btsc I2CSTATbits, #15
     GOTO ACKWAIT1
 
 TRANSMITCOMPLETE1:
-    btsc I2CSTAT, #14
+    btsc I2CSTATbits, #14
     GOTO TRANSMITCOMPLETE1
 
     ;send slave register address
-    mov .59, WREG  ;;why doesnt this work? start with a 1?
+    mov .59, WREG  
     mov WREG, I2CTRN
 
 CHECKTRANSMIT2:
-    btsc I2CSTAT, #0
+    btsc I2CSTATbits, #0
     GOTO CHECKTRANSMIT2
     ;wait for acknowledge
 ACKWAIT2:
-    btsc I2CSTAT, #15
+    btsc I2CSTATbits, #15
     GOTO ACKWAIT2
 
 TRANSMITCOMPLETE2:
-    btsc I2CSTAT, #14
+    btsc I2CSTATbits, #14
     GOTO TRANSMITCOMPLETE2
 
     ;Repeated Start
@@ -104,15 +104,15 @@ TRANSMITCOMPLETE2:
     mov w1, I2CTRN
     ;wait for transmit to complete
 CHECKTRANSMIT3:
-    btsc I2CSTAT, #0
+    btsc I2CSTATbits, #0
     GOTO CHECKTRANSMIT3
 
     ;wait for acknowledge
 ACKWAIT3:
-    btsc I2CSTAT, #15
+    btsc I2CSTATbits, #15
     GOTO ACKWAIT3
 TRANSMITCOMPLETE3:
-    btsc I2CSTAT, #14
+    btsc I2CSTATbits, #14
     GOTO TRANSMITCOMPLETE3
 
 /**REPEAT THE FOLLOWING SEQUENCE FOR ALL ACC TEMP AND GYRO
