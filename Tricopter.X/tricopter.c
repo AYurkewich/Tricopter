@@ -110,8 +110,26 @@ Input input;
 typedef struct {int xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal;}SpaceCal;
 SpaceCal spaceCal;
 
-typedef struct {int Xacc, Yacc, Zacc;}Acc_Linear;
+typedef struct {int Xacc=0, Yacc=0, Zacc=0;}Acc_Linear;
 Acc_Linear acc_Linear;
+
+typedef struct {int Xvel=0, Yvel=0, Zvel=0;}Vel_Linear;
+Vel_Linear vel_Linear;
+
+typedef struct {int Xpos=0, Ypos=0, Zpos=0;}Pos_Linear;
+Pos_Linear pos_Linear;
+
+typedef struct {int Xaddpos=0, Yaddpos=0, Zaddpos=0;}Addpos_Linear;
+Addpos_Linear addpos_Linear;
+
+typedef struct {int Xvel=0, Yvel=0, Zvel=0;}Vel_Rotation;
+Vel_Rotation vel_Rotation;
+
+typedef struct {int Xpos=0, Ypos=0, Zpos=0;}Pos_Rotation;
+Pos_Rotation pos_Rotation;
+
+typedef struct {int Xaddpos=0, Yaddpos=0, Zaddpos=0;}Addpos_Rotation;
+Addpos_Rotation addpos_Rotation;
 
 unsigned int motSpeed[6];
 unsigned int batLow;
@@ -123,6 +141,10 @@ int motor3 = 0;
 int motor4 = 0;
 int motor5 = 0;
 int motor6 = 0;
+int dt=0;
+int dt1=0;
+int dt2=0;
+int clockinit;
 
 int motorStable[6] = {0,0,0,0,0,0};
 int AccXdeg, AccYdeg, AccZdeg, AccXdegEff, AccYdegEff, AccZdegEff;
@@ -149,7 +171,8 @@ void incAll(void);
 void decAll(void);
 void setMot(void);
 void retMot(void);
-void I2CData_to_POS (void);
+void I2CData_to_Pos (void);
+void I2CData_to_Orientation(void)
 //void delay(int);
 
 
@@ -233,6 +256,8 @@ int main(void) {
     } else{
         go();
     }
+    I2CData_to_Pos()
+    I2CData_to_Orientation()
 }
 
 //Set buffers etc.
@@ -246,7 +271,6 @@ void initialize(void){
 	init_ADC();								// ADC Setup
 	init_DAC_Comparators();
         init_T1();
-        
 	//TB04 = 0;                 //Set RB4 as output
         //LB04 = 1; high            //Set RB4 as high
 
@@ -324,6 +348,7 @@ void calibrate(void){
     int aXref = 0; //tilt down
     int aYref = 0; //tilt left
     int aZref = 0;
+
 }
 
 //Flight Sequence
@@ -567,11 +592,39 @@ int retMot(int motNum){
 
 //3D Motion Tracking
 //Initialize all at 0 on start
-void I2CData_to_POS(void)
+void I2CData_to_Pos(void)
 {
+    if (clockinit==0)
+    {
+        dt1=clock()/1000000;
+        clockinit=1;
+    }
+    dt2=clock()/1000000;
+    dt=(dt2-dt1);
+    dt1=dt2;
+
     //AFS_SEL=2;
-    //get the acceleration in g
-    acc_Linear.Xacc= (AccX/4096)-8; 
+    //get the acceleration in m/s^2
+    acc_Linear.Xacc= ((AccX/4096)-8)*9.80665;
+    acc_Linear.Yacc= ((AccY/4096)-8)*9.80665; 
+    acc_Linear.Zacc= ((AccZ/4096)-8)*9.80665; 
+    
+    //get velocity
+    vel_Linear.Xvel= (acc_Linear.Xacc)*dt;
+    vel_Linear.Yvel= (acc_Linear.Yacc)*dt;
+    vel_Linear.Zvel= (acc_Linear.Zacc)*dt;
+
+    addpos_Linear.Xaddpos= (vel_Linear.Xvel)*dt;
+    addpos_Linear.Yaddpos= (vel_Linear.Yvel)*dt;
+    addpos_Linear.Zaddpos= (vel_Linear.Zvel)*dt;
+
+    pos_Linear.Xpos=(pos_Linear.Xpos+addpos_Linear.Xaddpos);
+    pos_Linear.Ypos=(pos_Linear.Ypos+addpos_Linear.Yaddpos);
+    pos_Linear.Zpos=(pos_Linear.Zpos+addpos_Linear.Zaddpos);
+
+
+
+
     
     /*
     //in feet
@@ -590,4 +643,33 @@ void I2CData_to_POS(void)
     int aZref = aZref + GyroZdeg * dt; //CCW rotation
 
 */
+}
+
+void I2CData_to_Orientation(void)
+{
+   /*may need to update dt b/w acc and gyro
+        if (clockinit==0)
+    {
+        dt1=clock()/1000000;
+        clockinit=1;
+    }
+    dt2=clock()/1000000;
+    dt=(dt2-dt1);
+    dt1=dt2;
+    */
+
+    //FS_SEL=2;
+    //get the angular velocity in degrees/s
+    vel_Rotation.Xvel= ((GyroX/32.8)-1000);
+    vel_Rotation.Yvel= ((GyroY/32.8)-1000);
+    vel_Rotation.Zvel= ((GyroZ/32.8)-1000);
+
+    addpos_Rotation.Xaddpos= (vel_Rotation.Xvel)*dt;
+    addpos_Rotation.Yaddpos= (vel_Rotation.Yvel)*dt;
+    addpos_Rotation.Zaddpos= (vel_Rotation.Zvel)*dt;
+
+    pos_Rotation.Xpos=(pos_Rotation.Xpos+addpos_Rotation.Xaddpos);
+    pos_Rotation.Ypos=(pos_Rotation.Ypos+addpos_Rotation.Yaddpos);
+    pos_Rotation.Zpos=(pos_Rotation.Zpos+addpos_Rotation.Zaddpos);
+
 }
