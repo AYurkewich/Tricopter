@@ -110,6 +110,9 @@ Input input;
 typedef struct {int xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal;}SpaceCal;
 SpaceCal spaceCal;
 
+typedef struct {int Xacc, Yacc, Zacc;}Acc_Linear;
+Acc_Linear acc_Linear;
+
 unsigned int motSpeed[6];
 unsigned int batLow;
 int ms;
@@ -146,6 +149,7 @@ void incAll(void);
 void decAll(void);
 void setMot(void);
 void retMot(void);
+void I2CData_to_POS (void);
 //void delay(int);
 
 
@@ -563,23 +567,27 @@ int retMot(int motNum){
 
 //3D Motion Tracking
 //Initialize all at 0 on start
-void INTERRUPT conv2Pos(void)
+void I2CData_to_POS(void)
 {
-    /*in feet*/
+    //AFS_SEL=2;
+    //get the acceleration in g
+    acc_Linear.Xacc= (AccX/4096)-8; 
+    
+    /*
+    //in feet
     int Xabs;
     int Yabs;
     int Zabs;
-    /*in degrees*/
-    int aXabs = ;
-    int aYabs = ;
-    int aZabs;
-    /*in feet*/
+    //in degrees
+
+    //in feet
     int Xref;
     int Yref;
     int Zref;
-    /*in degrees*/
+    //in degrees*
     int aXref = AccXdeg; //tilt down
     int aYref = AccYdeg; //tilt left
     int aZref = aZref + GyroZdeg * dt; //CCW rotation
-    cos()
+
+*/
 }
