@@ -1,55 +1,86 @@
 ;Set up I2C comunication and store data in bit form as AccX-Z/GyroX-Z/Temp
 
-.include "p33FJ32MC202.inc"
-.include	"Init_ASM_h.inc"
+;.include "p33FJ32MC202.inc"
+;.include	"Init_ASM_h.inc"
+
+    .equiv AccX,0x0000
+    .equiv AccY,0x0000
+    .equiv AccZ,0x0000
+    .equiv Temperature, 0x0000
+    .equiv GyroX, 0x0000
+    .equiv GyroY, 0x0000
+    .equiv GyroZ, 0x0000
+
+    .equiv AccX1, 0x0000
+    .equiv AccX2, 0x0000
+    .equiv AccY1, 0x0000
+    .equiv AccY2, 0x0000
+    .equiv AccZ1, 0x0000
+    .equiv AccZ2, 0x0000
+    .equiv Temperature1, 0x0000
+    .equiv Temperature2, 0x0000
+    .equiv GyroX1, 0x0000
+    .equiv GyroX2, 0x0000
+    .equiv GyroY1, 0x0000
+    .equiv GyroY2, 0x0000
+    .equiv GyroZ1, 0x0000
+    .equiv GyroZ2, 0x0000
+    .equiv AccXOLD, 0x0000
+    .equiv AccYOLD, 0x0000
+    .equiv AccZOLD, 0x0000
+    .equiv TemperatureOLD, 0x0000
+    .equiv GyroXOLD, 0x0000
+    .equiv GyroYOLD, 0x0000
+    .equiv GyroZOLD, 0x0000
+
 ;Functions called from inside I2C_Data
 
-;Start sequence includes setting I2CCON
+;Start sequence includes setting I2C1CON
 I2CSTARTSEQ:
-    bset   I2CCONbits,#0
+    bset   I2C1CON,#0
 CHECKSTART:
-    btsc I2CCONbits,#0
+    btsc I2C1CON,#0
     GOTO CHECKSTART
     Return
 
 I2CSTOPSEQ:
-    bset   I2CCONbits,#2
+    bset   I2C1CON,#2
 CHECKSTOP:
-    btsc I2CCONbits,#2
+    btsc I2C1CON,#2
     GOTO CHECKSTOP
     Return
 
 I2CREPEATSTART:
-    bset I2CCONbits, #1
+    bset I2C1CON, #1
 CHECKREPEAT:
-    btsc I2CCONbits, #1
+    btsc I2C1CON, #1
     GOTO CHECKREPEAT
     Return
 
 I2CSENDNACK:
-    bset I2CCONbits, #5
-    bset I2CCONbits, #4
+    bset I2C1CON, #5
+    bset I2C1CON, #4
 CHECKSENDNACK:
-    btsc I2CCONbits, #4
+    btsc I2C1CON, #4
     GOTO CHECKSENDNACK
     Return
 
 I2CSENDACK:
-    bclr I2CCONbits, #5
-    bset I2CCONbits, #4
+    bclr I2C1CON, #5
+    bset I2C1CON, #4
 CHECKSENDACK:
-    btsc I2CCONbits, #4
+    btsc I2C1CON, #4
     GOTO CHECKSENDACK
     Return
 
 RECEIVEWAIT:
-    bset I2CCONbits, #3
-    btss I2CSTATbits, #1
+    bset I2C1CON, #3
+    btss I2C1STAT, #1
     GOTO RECEIVEWAIT
     Return
 
 CLEARRECEIVEWAIT:
-    btsc I2CSTATbits, #1
+    btsc I2C1STAT, #1
     GOTO CLEARRECEIVEWAIT
     Return
 
@@ -59,39 +90,39 @@ GETACCTEMPGYRODATA:
     ;start seq
     Call I2CSTARTSEQ
     
-    ;;;;;;is I2CSTAT #2 right to use/correct order? ;send slave address(1101000) + Write bit(0)
-    mov b11010000, w1
-  ;  btsc I2CSTATbits, #2
+    ;;;;;;is I2C1STAT #2 right to use/correct order? ;send slave address(1101000) + Write bit(0)
+    mov #0b11010000, w1
+  ;  btsc I2C1STATbits, #2
     mov w1, I2CTRN
 
     ;wait for transmit to complete
 CHECKTRANSMIT1:
-    btsc I2CSTATbits, #0
+    btsc I2C1STAT, #0
     GOTO CHECKTRANSMIT1
 
     ;wait for acknowledge
 ACKWAIT1:
-    btsc I2CSTATbits, #15
+    btsc I2C1STAT, #15
     GOTO ACKWAIT1
 
 TRANSMITCOMPLETE1:
-    btsc I2CSTATbits, #14
+    btsc I2C1STAT, #14
     GOTO TRANSMITCOMPLETE1
 
     ;send slave register address
-    mov .59, WREG  
-    mov WREG, I2CTRN
+    mov #59, W0
+    mov W0, I2CTRN
 
 CHECKTRANSMIT2:
-    btsc I2CSTATbits, #0
+    btsc I2C1STAT, #0
     GOTO CHECKTRANSMIT2
     ;wait for acknowledge
 ACKWAIT2:
-    btsc I2CSTATbits, #15
+    btsc I2C1STAT, #15
     GOTO ACKWAIT2
 
 TRANSMITCOMPLETE2:
-    btsc I2CSTATbits, #14
+    btsc I2C1STAT, #14
     GOTO TRANSMITCOMPLETE2
 
     ;Repeated Start
@@ -99,27 +130,27 @@ TRANSMITCOMPLETE2:
     ;;I2CREPEATSTARTFINISHED
 
     ;send slave address + Read bit
-    mov b11010001, w1
-   ; btsc I2CSTAT, #2
-    mov w1, I2CTRN
+    mov #0b11010001, w0
+   ; btsc I2C1STAT, #2
+    mov w0, I2CTRN
     ;wait for transmit to complete
 CHECKTRANSMIT3:
-    btsc I2CSTATbits, #0
+    btsc I2C1STAT, #0
     GOTO CHECKTRANSMIT3
 
     ;wait for acknowledge
 ACKWAIT3:
-    btsc I2CSTATbits, #15
+    btsc I2C1STAT, #15
     GOTO ACKWAIT3
 TRANSMITCOMPLETE3:
-    btsc I2CSTATbits, #14
+    btsc I2C1STAT, #14
     GOTO TRANSMITCOMPLETE3
 
 /**REPEAT THE FOLLOWING SEQUENCE FOR ALL ACC TEMP AND GYRO
 ;Description: Take both bytes for each x,y,z coordinate (x1, x2) and add them
 ;             Returns AccX/Y/Z, Temperature, GyroX/Y/Z
 */
-;I2CSTATbits.RBF=1 when receive complete
+;I2C1STATbits.RBF=1 when receive complete
 
 ;START OF REPEATING SEQUENCE for AccX
 Call RECEIVEWAIT
@@ -140,7 +171,7 @@ Call RECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
-    ;I2CSTATbits.RBF=1 when receive complete
+    ;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
    
     ;receive Accelerometer X2 data
@@ -167,7 +198,7 @@ Call RECEIVEWAIT
 ;END OF REPEATING SEQUENCE for AccX
 
 ;START OF REPEATING SEQUENCE for AccY
-;I2CSTATbits.RBF=1 when receive complete
+;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
 
 ;receive Accelerometer Y1 data
@@ -186,7 +217,7 @@ Call RECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
-    ;I2CSTATbits.RBF=1 when receive complete
+    ;I2C1STATbits.RBF=1 when receive complete
 Call RECEIVEWAIT
 
     ;receive Accelerometer Y2 data
@@ -209,7 +240,7 @@ Call CLEARRECEIVEWAIT
 ;;END OF REPEATING SEQUENCE for AccY
 
 ;START OF REPEATING SEQUENCE for AccZ
-;I2CSTATbits.RBF=1 when receive complete
+;I2C1STATbits.RBF=1 when receive complete
 Call RECEIVEWAIT
    
 ;receive Accelerometer Z1 data
@@ -229,7 +260,7 @@ Call RECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
-    ;I2CSTATbits.RBF=1 when receive complete
+    ;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
 
    ;receive Accelerometer Z2 data
@@ -254,7 +285,7 @@ Call RECEIVEWAIT
 
 
 ;START OF REPEATING SEQUENCE for Temperature
-;I2CSTATbits.RBF=1 when receive complete
+;I2C1STATbits.RBF=1 when receive complete
 Call RECEIVEWAIT
 
 ;receive Temperature1 data
@@ -273,7 +304,7 @@ Call RECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
-    ;I2CSTATbits.RBF=1 when receive complete
+    ;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
 
     ;receive Temperature2 data
@@ -298,7 +329,7 @@ Call RECEIVEWAIT
 
 
 ;START OF REPEATING SEQUENCE for GyroX
-;I2CSTATbits.RBF=1 when receive complete
+;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
 
 ;receive GYROX1 data
@@ -317,7 +348,7 @@ Call RECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
-    ;I2CSTATbits.RBF=1 when receive complete
+    ;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
 
     ;receive Gyro X2 data
@@ -342,7 +373,7 @@ Call RECEIVEWAIT
 
 
 ;START OF REPEATING SEQUENCE for GyroY
-;I2CSTATbits.RBF=1 when receive complete
+;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
 
 ;receive Gyro Y1 data
@@ -361,7 +392,7 @@ Call RECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
-    ;I2CSTATbits.RBF=1 when receive complete
+    ;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
  
     ;receive Gyro Y2 data
@@ -386,7 +417,7 @@ Call RECEIVEWAIT
 
 
 ;START OF REPEATING SEQUENCE for GyroZ
-;I2CSTATbits.RBF=1 when receive complete
+;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
    
 ;receive GyroZ1 data
@@ -405,7 +436,7 @@ Call RECEIVEWAIT
     Call I2CSENDACK
     ;;I2CSENDACKFINISHED
 
-    ;I2CSTATbits.RBF=1 when receive complete
+    ;I2C1STATbits.RBF=1 when receive complete
     Call RECEIVEWAIT
 
     ;receive Gyro Z2 data

@@ -5,8 +5,9 @@
 ;**********************************************************/
 
 .include "p33FJ32MC202.inc"
-
-.include	"Init_ASM_h.inc"	
+.include "Init_ASM_h.inc"
+.include "PWM.s"
+.include "I2C_Data.s"
 
       .global __T1Interrupt    ;Declare Timer 1 ISR name global
 

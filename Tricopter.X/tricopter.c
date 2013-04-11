@@ -110,37 +110,37 @@ Input input;
 typedef struct {int xPosCal, yPosCal, zPosCal, xAngCal, yAngCal, zAngCal;}SpaceCal;
 SpaceCal spaceCal;
 
-typedef struct {int Xacc=0, Yacc=0, Zacc=0;}Acc_Linear;
+typedef struct {int Xacc, Yacc, Zacc;}Acc_Linear;
 Acc_Linear acc_Linear;
 
-typedef struct {int Xvel=0, Yvel=0, Zvel=0;}Vel_Linear;
+typedef struct {int Xvel, Yvel, Zvel;}Vel_Linear;
 Vel_Linear vel_Linear;
 
-typedef struct {int Xpos=0, Ypos=0, Zpos=0;}Pos_Linear;
+typedef struct {int Xpos, Ypos, Zpos;}Pos_Linear;
 Pos_Linear pos_Linear;
 
-typedef struct {int Xaddpos=0, Yaddpos=0, Zaddpos=0;}Addpos_Linear;
+typedef struct {int Xaddpos, Yaddpos, Zaddpos;}Addpos_Linear;
 Addpos_Linear addpos_Linear;
 
-typedef struct {int Xvel=0, Yvel=0, Zvel=0;}Vel_Rotation;
+typedef struct {int Xvel, Yvel, Zvel;}Vel_Rotation;
 Vel_Rotation vel_Rotation;
 
-typedef struct {int Xpos=0, Ypos=0, Zpos=0;}Pos_Rotation;
+typedef struct {int Xpos, Ypos, Zpos;}Pos_Rotation;
 Pos_Rotation pos_Rotation;
 
-typedef struct {int Xaddpos=0, Yaddpos=0, Zaddpos=0;}Addpos_Rotation;
+typedef struct {int Xaddpos, Yaddpos, Zaddpos;}Addpos_Rotation;
 Addpos_Rotation addpos_Rotation;
 
 unsigned int motSpeed[6];
 unsigned int batLow;
 int ms;
 int distToGround;
-int motor1 = 0;
-int motor2 = 0;
-int motor3 = 0;
-int motor4 = 0;
-int motor5 = 0;
-int motor6 = 0;
+int motor1;
+int motor2;
+int motor3;
+int motor4;
+int motor5;
+int motor6;
 int dt=0;
 int dt1=0;
 int dt2=0;
@@ -172,16 +172,16 @@ void decAll(void);
 void setMot(void);
 void retMot(void);
 void I2CData_to_Pos (void);
-void I2CData_to_Orientation(void)
+void I2CData_to_Orientation(void);
 //void delay(int);
 
 
 
 /************************************************/
 //CALIBRATION CONSTANTS
-int testing = 1;        //1=testing 0=actual
-int calibrating = 1;    //1=calibrating 0=actual
-int halfSpeed = 30;     //motor half speed
+int testing;        //1=testing 0=actual !!! was 1
+int calibrating;    //1=calibrating 0=actual !!!was 1
+int halfSpeed;     //motor half speed !!was 30
 //theoretical flat offsets of 32768
 //Accel sensitivity: 4096 bits per g
 //Gyro Sensitivity:  32.8 bits per dps
@@ -195,15 +195,15 @@ int AccZ0;
  * int AccY0 = 32768;
  * int AccZ0 = 32768;
  */
-int AccSens = 4096;
+//int AccSens = 4096;
 //Gyro values set themselves on startup
 int GyroX0;
 int GyroY0;
 int GyroZ0;
-int GyroSens = 32.768;
+//int GyroSens = 32.768;
 //PD Control: non:specific
-int Kp = 5; //Constant Kp
-int Kd = 3; //Constant Kd
+//int Kp = 5; //Constant Kp
+//int Kd = 3; //Constant Kd
 /* PD Control: specific
  * int KpAccX;
  * int KpAccY;
@@ -217,23 +217,24 @@ int Kd = 3; //Constant Kd
  * int KdGyroX;
  * int KdGyroY;
  * int KdGyroZ; */
-int GyroCoeff = .98;
+//int GyroCoeff = .98;
 
 //Z-Spin offsets between each motor of a pair
-int motor12Offset = 0;
-int motor34Offset = 0;
-int motor56Offset = 0;
+int motor12Offset;
+int motor34Offset;
+int motor56Offset;
 //Speeds of each motor pair to hover, offsets between pairs of motors
 int motor12Hover;
 int motor34Hover;
 int motor56Hover;
-int AccST = 1;          //Acc/Gyro SensitivityTime (seconds), to prevent vibrating
-int pathDiv = 0;        //Acceptable divergence from path
+int AccST;          //Acc/Gyro SensitivityTime (seconds), to prevent vibrating !!! was 1
+int pathDiv;        //Acceptable divergence from path
 /************************************************/
 
 
 //Main: Initialize, Testing, Start
-int main(void) {
+int main()
+{
     goal [1][0]= 5; //position 1
     goal [1][1]= 3; //position 2
     goal [1][2]= -2; //position 3
@@ -243,8 +244,9 @@ int main(void) {
 //    int AccCoeff = 1-GyroCoeff;
 //Initialize registers and ports
     //Pressing button gives power to micro and starts it
-    initialize();
+    //initialize();
    // SLEEP(3000); //3 second delay
+    /*
     if (testing) {
        int i=0;
         for (i=0; i < 6; i++) {
@@ -256,10 +258,13 @@ int main(void) {
     } else{
         go();
     }
-    I2CData_to_Pos()
-    I2CData_to_Orientation()
+    */
+    I2CData_to_Pos();
+    I2CData_to_Orientation();
+    return 0;
 }
 
+/*
 //Set buffers etc.
 void initialize(void){
   //WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
@@ -281,7 +286,7 @@ void initialize(void){
 	IEC0bits.T1IE = 1;
 //	uc_Main_Case_Index = 0;
 
-  /*P1DIR = 0xFF; //(nov 13th)0xFF;           // All P1.x outputs
+  //P1DIR = 0xFF; //(nov 13th)0xFF;           // All P1.x outputs
   P1OUT = 0;                                // All P1.x reset
   P2DIR = 0xFF;                             // All P2.x outputs
   P2OUT = 0;                                // All P2.x reset
@@ -314,9 +319,10 @@ void initialize(void){
   IE2 |= UCA0RXIE;// + UCA0TXIE;            // Enable USCI_A0 RX TX or timer interrupt....CLEAR FLAGS FIRST?
   _enable_interrupt();                      // Enable interrupts
   //__bis_SR_register(LPM3_bits + GIE);     // Enter LPM3 w/ int until Byte RXed
-  */
+  
 }
-
+*/
+/*
 //Set Acc/Gyro Reference Values
 void calibrate(void){
     //Is it being calibrated with a camera or laser? Set to a perfect straight line?
@@ -336,21 +342,21 @@ void calibrate(void){
     int Xabs = 0;
     int Yabs = 0;
     int Zabs = 0;
-    /*in degrees*/
+    //in degrees
     int aXabs = 0;
     int aYabs = 0;
     int aZabs = 0;
-    /*in feet*/
+    //in feet
     int Xref = 0;
     int Yref = 0;
     int Zref = 0;
-    /*in degrees*/
+    //in degrees
     int aXref = 0; //tilt down
     int aYref = 0; //tilt left
     int aZref = 0;
 
 }
-
+*/
 //Flight Sequence
 /*void go(void) {
     //STEP ONE: Start sequence (w or w/o button) to start
@@ -428,11 +434,13 @@ void calibrate(void){
 }
 */
 //Read Camera to detect ground, obstacles, USB
+/*
 int camSensor(void){
     //read camera sensor
     return distToGround;
 }
-
+*/
+/*
 //Hover in place, PD Control
 void stabilize(int height){
     //STEP ONE: Stabilize in X and Y
@@ -449,18 +457,18 @@ void stabilize(int height){
         GyroYdeg =(GyroY-GyroY0)/GyroSens; //velocity in degrees/second
         //GyroZdeg =(GyroZ-GyroZ0)/GyroSens; //velocity in degrees/second
 
-        /*Initial AccXdegEff value*/
+        //Initial AccXdegEff value
         if(enterLoop == 0){
             AccXdegEff = AccXdeg;
             AccYdegEff = AccYdeg;
             //AccZdegEff = AccZdeg;
         }
-        /*Effective Angles: Filter quick Acc readings*/
+        //Effective Angles: Filter quick Acc readings
         AccXdegEff = GyroCoeff * (AccXdegEff - GyroYdeg * dt) + AccCoeff * (AccXdeg);
         AccYdegEff = GyroCoeff * (AccYdegEff - GyroXdeg * dt) + AccCoeff * (AccYdeg);
         //AccZdegEff = GyroCoeff * (AccZdeg + GyroZdeg * dt) + AccCoeff * (AccZdeg);
 
-        //**Simplification: Have Motors12 controlX, have Motors34 control Y
+        //Simplification: Have Motors12 controlX, have Motors34 control Y
         Motor1 = motor12Hover + Kp * AccXdegEff - Kd * GyroYdeg;
         Motor2 = Motor1;
         Motor3 = motor34Hover + Kp * AccYdegEff - Kd * GyroXdeg;
@@ -484,7 +492,7 @@ void stabilize(int height){
     }
     //blink green //blinks green if fully stabilized
 
-    /*RECORD STABLE VALUES*/
+    //RECORD STABLE VALUES
     if (stabilized == 0) {
         for (int k(0); k < 6; k++) {
             motorStable[k] = motors[k];
@@ -497,8 +505,10 @@ void stabilize(int height){
     }
 
 }
-
-void land(void){
+*/
+/*
+void land(void)
+{
     //check speed
     //check acceleration
     //check orientation
@@ -507,10 +517,13 @@ void land(void){
     descend(-1); //Descend to ground
 
 }
-
-//**************Ascend using PD Control
-void ascend(int height, int speed){     //speed is a number 1-5, 5 being fastest
-    while(zPos < height){
+*/
+//Ascend using PD Control
+/*
+void ascend(int height, int speed)
+{     //speed is a number 1-5, 5 being fastest
+    while(zPos < height)
+    {
         Motor1 += speed;
         Motor2 += speed;
         Motor3 += speed;
@@ -520,10 +533,12 @@ void ascend(int height, int speed){     //speed is a number 1-5, 5 being fastest
         delay (1sec)
     }
 }
-
+*/
 //**************Descend using PD Control
+/*
 void descend(int height, int speed){ //descends at constant speed to height
-    while(zPos > height){
+    while(zPos > height)
+    {
         Motor1 += speed;
         Motor2 += speed;
         Motor3 += speed;
@@ -533,7 +548,8 @@ void descend(int height, int speed){ //descends at constant speed to height
         delay(1000)
     }
 }
-
+ */
+/*
 void incAll(int speed){
     if(retMot(1)<speed){
         M1++;
@@ -554,7 +570,8 @@ void incAll(int speed){
         M6++;
     }
 }
-
+*/
+/*
 void decAll(int speed){
     if(retMot(1)>speed){
         M1--;
@@ -575,15 +592,17 @@ void decAll(int speed){
         M6--;
     }
 }
-
-void setMot(int motNum, motSpeed){
-    motSpeed[motNum-1] = motSpeed; //**********Arithmetic to determine what is sent to motor
+ */
+/*
+void SetMotorSpeed(int motNum, motSpeed){
+   // motSpeed[motNum-1] = motSpeed; //Arithmetic to determine what is sent to motor
 }
-
+*/
+/*
 int retMot(int motNum){
-    return motSpeed[motNum-1];
+   // return motSpeed[motNum-1];
 }
-
+*/
 /*void delay(int delTime){
     for(int z(0); z<delTime; z++){
         //delay
@@ -671,5 +690,5 @@ void I2CData_to_Orientation(void)
     pos_Rotation.Xpos=(pos_Rotation.Xpos+addpos_Rotation.Xaddpos);
     pos_Rotation.Ypos=(pos_Rotation.Ypos+addpos_Rotation.Yaddpos);
     pos_Rotation.Zpos=(pos_Rotation.Zpos+addpos_Rotation.Zaddpos);
-
 }
+
