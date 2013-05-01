@@ -173,6 +173,8 @@ void setMot(void);
 void retMot(void);
 void I2CData_to_Pos (void);
 void I2CData_to_Orientation(void);
+void stall(int stalltime);
+void pwmtest (void);
 //void delay(int);
 
 
@@ -244,8 +246,14 @@ int main()
 //    int AccCoeff = 1-GyroCoeff;
 //Initialize registers and ports
     //Pressing button gives power to micro and starts it
-    //initialize();
-   // SLEEP(3000); //3 second delay
+    initialize();
+    
+    //do nothing for certain time (in seconds) so people can get away
+    stall(3);
+   // calibrate();
+
+    //set LED brightness relative to the motor speed
+    pwmtest();
     /*
     if (testing) {
        int i=0;
@@ -264,28 +272,29 @@ int main()
     return 0;
 }
 
-/*
+
 //Set buffers etc.
 void initialize(void){
   //WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
-        ubBufferIndex = 0;
-        ubLastBufferIndex = 0;
+     //   ubBufferIndex = 0;
+     //   ubLastBufferIndex = 0;
 
 	init_Osc();
 	init_PWM();								// PWM Setup
 	init_ADC();								// ADC Setup
 	init_DAC_Comparators();
         init_T1();
+        init_I2C();
 	//TB04 = 0;                 //Set RB4 as output
         //LB04 = 1; high            //Set RB4 as high
 
-   // PTCONbits.PTEN = 1;                   // Enable the PWM
+        // PTCONbits.PTEN = 1;                   // Enable the PWM
 //	ADCONbits.ADON = 1;                 // Enable the ADC
 
-        uiHeaderZeroCount = 0;
-	IEC0bits.T1IE = 1;
+     //   uiHeaderZeroCount = 0;
+     //	IEC0bits.T1IE = 1;
 //	uc_Main_Case_Index = 0;
-
+/*
   //P1DIR = 0xFF; //(nov 13th)0xFF;           // All P1.x outputs
   P1OUT = 0;                                // All P1.x reset
   P2DIR = 0xFF;                             // All P2.x outputs
@@ -320,10 +329,12 @@ void initialize(void){
   _enable_interrupt();                      // Enable interrupts
   //__bis_SR_register(LPM3_bits + GIE);     // Enter LPM3 w/ int until Byte RXed
   
-}
+
 */
-/*
+}
+
 //Set Acc/Gyro Reference Values
+/*
 void calibrate(void){
     //Is it being calibrated with a camera or laser? Set to a perfect straight line?
     //Option 1: Let Accelerometer find its own level, ACCURACY?
@@ -692,3 +703,29 @@ void I2CData_to_Orientation(void)
     pos_Rotation.Zpos=(pos_Rotation.Zpos+addpos_Rotation.Zaddpos);
 }
 
+void stall (int stalltime)
+{
+ int clockwait1=clock();
+    int clockwait2=clock();
+    while ((clockwait2-stalltime*1000)<clockwait1)
+    {
+       motor1=0;
+       motor2=0;
+       motor3=0;
+       motor4=0;
+       motor5=0;
+       motor6=0;
+       clockwait2=clock();
+    }
+}
+
+void pwmtest(void)
+{
+    int i=0;
+    for (i=0; i<100; i++)
+    {
+        motor1 =i;
+        motor2 =i;
+        stall(.2);
+    }
+}

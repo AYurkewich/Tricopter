@@ -61,4 +61,9 @@ void init_PWM(void)
         TRISBbits.TRISB6=0;
         TRISBbits.TRISB7=0;
 
+
+        //Test PWM using LED'S
+        TRISAbits.TRISA2=0;
+        TRISAbits.TRISA3=0;
+
 }

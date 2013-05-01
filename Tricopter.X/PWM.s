@@ -21,6 +21,7 @@
     .equiv motor4, 0x0000
     .equiv motor5, 0x0000
     .equiv motor6, 0x0000
+    .equiv Initperiodrestart, 0x0000
 
 ;check if PWM's equal zero bit by bit (is there a better way?)
 
@@ -278,7 +279,8 @@ bset PWMmotor1check, #0
 Return
 
 PWMperiodrestart:
-mov #99, W0
+;period could go to 127 (remebering 100 is easier)
+mov #100, W0
 mov W0, PWMperiod
 mov motor1, WREG
 mov WREG, PWMmotor1
@@ -298,6 +300,11 @@ PWMSET:
 
 ;counter for period of PWM
 ;(use resolution 100 values; 100*1us=100us; rection time of 100us)
+btss Initperiodrestart, #0
+Call PWMperiodrestart
+btss Initperiodrestart, #0
+bset Initperiodrestart, #0
+
 Call CheckPWMperiodEQzero
 
 btsc PWMzerocheck, #0
@@ -312,24 +319,52 @@ Call CheckPWMmotor1EQzero
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so decrement PWMmotor1
 btsc PWMmotor1check, #0
 DEC PWMmotor1
-;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;test PWM using LED'S
 btsc PWMmotor1check, #0
 bset LATA, #2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
+btsc PWMmotor1check, #0
+bset LATB, #2
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;test PWM using LED'S
 btss PWMmotor1check, #0
 bclr LATA, #2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
+btss PWMmotor1check, #0
+bclr LATB, #2
 
 ;motor2
 Call CheckPWMmotor2EQzero
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so decrement PWMmotor1
 btsc PWMmotor2check, #0
 DEC PWMmotor2
-;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;test PWM using LED'S
 btsc PWMmotor2check, #0
 bset LATA, #3
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
+btsc PWMmotor2check, #0
+bset LATB, #3
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;test PWM using LED'S
 btss PWMmotor2check, #0
 bclr LATA, #3
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
+btss PWMmotor2check, #0
+bclr LATB, #3
 
 ;motor3
 Call CheckPWMmotor3EQzero
@@ -338,10 +373,10 @@ btsc PWMmotor3check, #0
 DEC PWMmotor3
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btsc PWMmotor3check, #0
-bset LATA, #4
+bset LATB, #4
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btss PWMmotor3check, #0
-bclr LATA, #4
+bclr LATB, #4
 
 ;motor4
 Call CheckPWMmotor4EQzero
@@ -350,10 +385,10 @@ btsc PWMmotor4check, #0
 DEC PWMmotor4
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btsc PWMmotor4check, #0
-bset LATA, #5
+bset LATB, #5
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btss PWMmotor4check, #0
-bclr LATA, #5
+bclr LATB, #5
 
 ;motor5
 Call CheckPWMmotor5EQzero
@@ -362,10 +397,10 @@ btsc PWMmotor5check, #0
 DEC PWMmotor5
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btsc PWMmotor5check, #0
-bset LATA, #6
+bset LATB, #6
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btss PWMmotor5check, #0
-bclr LATA, #6
+bclr LATB, #6
 ;motor6
 Call CheckPWMmotor6EQzero
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so decrement PWMmotor1
@@ -373,8 +408,8 @@ btsc PWMmotor6check, #0
 DEC PWMmotor6
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btsc PWMmotor6check, #0
-bset LATA, #7
+bset LATB, #7
 ;if PWMmotor1 is not zero than PWMmotor1check is 1 so motor1 is off
 btss PWMmotor6check, #0
-bclr LATA, #7
+bclr LATB, #7
 Return

@@ -1,9 +1,10 @@
 
 
-
+#include "Micros_h_File.h"
 #include "p33Fxxxx.h"
 #include "i2c.h"
-void Init_I2C(void)
+
+void init_I2C(void)
 {
 ////////HOW TO USE I2C/////////////////
 //http://www.robot-electronics.co.uk/acatalog/I2C_Tutorial.html
