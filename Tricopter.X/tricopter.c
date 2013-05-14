@@ -122,6 +122,9 @@ Pos_Linear pos_Linear;
 typedef struct {int Xaddpos, Yaddpos, Zaddpos;}Addpos_Linear;
 Addpos_Linear addpos_Linear;
 
+typedef struct {int Xaddvel, Yaddvel, Zaddvel;}Addvel_Linear;
+Addvel_Linear addvel_Linear;
+
 typedef struct {int Xvel, Yvel, Zvel;}Vel_Rotation;
 Vel_Rotation vel_Rotation;
 
@@ -250,7 +253,7 @@ int main()
     
     //do nothing for certain time (in seconds) so people can get away
     stall(3);
-   // calibrate();
+    calibrate();
 
     //set LED brightness relative to the motor speed
     pwmtest();
@@ -285,6 +288,16 @@ void initialize(void){
 	init_DAC_Comparators();
         init_T1();
         init_I2C();
+
+    //initialize the old accel/gyro value
+    AccXOLD=AccX;
+    AccYOLD=AccY;
+    AccZOLD=AccZ;
+    TemperatureOLD=Temperature;
+    GyroXOLD=GyroX;
+    GyroYOLD=GyroY;
+    GyroZOLD=GyroZ;
+    
 	//TB04 = 0;                 //Set RB4 as output
         //LB04 = 1; high            //Set RB4 as high
 
@@ -334,13 +347,15 @@ void initialize(void){
 }
 
 //Set Acc/Gyro Reference Values
-/*
+
 void calibrate(void){
+
     //Is it being calibrated with a camera or laser? Set to a perfect straight line?
     //Option 1: Let Accelerometer find its own level, ACCURACY?
+    //Would you get an accelerometer value if stationary on ground?
     AccX0 = AccX;
     AccY0 = AccY;
-    AccZ0 = AccZ;    //
+    AccZ0 = AccZ;    
     GyroX0 = GyroX;
     GyroY0 = GyroY;
     GyroZ0 = GyroZ;
@@ -350,6 +365,13 @@ void calibrate(void){
     //goal[0][3]= xAng;
     //goal[0][4]= yAng;
     //goal[0][5]= zAng;
+    
+    //find axis perpendicular to earth ground with tricopter nonmoving
+    //z accn= gravity, no x or y accn
+    //z accn= sqrt[AccX*(g/LSB)^2 + AccY^2 + AccZ^2]
+    //acc_Linear.Zacc= AccX*
+
+    /*
     int Xabs = 0;
     int Yabs = 0;
     int Zabs = 0;
@@ -365,9 +387,9 @@ void calibrate(void){
     int aXref = 0; //tilt down
     int aYref = 0; //tilt left
     int aZref = 0;
-
-}
 */
+}
+
 //Flight Sequence
 /*void go(void) {
     //STEP ONE: Start sequence (w or w/o button) to start
@@ -639,11 +661,17 @@ void I2CData_to_Pos(void)
     acc_Linear.Yacc= ((AccY/4096)-8)*9.80665; 
     acc_Linear.Zacc= ((AccZ/4096)-8)*9.80665; 
     
-    //get velocity
-    vel_Linear.Xvel= (acc_Linear.Xacc)*dt;
-    vel_Linear.Yvel= (acc_Linear.Yacc)*dt;
-    vel_Linear.Zvel= (acc_Linear.Zacc)*dt;
+    //get the added velocity
+    addvel_Linear.Xaddvel= (acc_Linear.Xacc)*dt;
+    addvel_Linear.Yaddvel= (acc_Linear.Yacc)*dt;
+    addvel_Linear.Zaddvel= (acc_Linear.Zacc)*dt;
+    
+    //get velocity in m/s
+    vel_Linear.Xvel= (vel_Linear.Xvel+addvel_Linear.Xaddvel);
+    vel_Linear.Yvel= (vel_Linear.Yvel+addvel_Linear.Yaddvel);
+    vel_Linear.Zvel= (vel_Linear.Zvel+addvel_Linear.Zaddvel);
 
+    //get the added position
     addpos_Linear.Xaddpos= (vel_Linear.Xvel)*dt;
     addpos_Linear.Yaddpos= (vel_Linear.Yvel)*dt;
     addpos_Linear.Zaddpos= (vel_Linear.Zvel)*dt;

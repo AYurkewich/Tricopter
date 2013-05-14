@@ -161,8 +161,8 @@ Call RECEIVEWAIT
 ;;Wb=w1, Wns=w2, Wnd=w3
     mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-    mov 8, W2
-    ;Wnd=Left shift Wb by Wns
+    mov #8, W2
+    ;Wnd=Left shift Wb by Wns (Wb,Wns,Wnd)
     SL W1, W2, W3
     mov W3, AccX1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -207,7 +207,7 @@ Call RECEIVEWAIT
 ;;Wb=w1, Wns=w2, Wnd=w3
     mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-    mov 8, W2
+    mov #8, W2
     ;Wnd=Left shift Wb by Wns
     SL W1, W2, W3
     mov W3, AccY1
@@ -250,7 +250,7 @@ Call RECEIVEWAIT
 
     mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-    mov 8, W2
+    mov #8, W2
     ;Wnd=Left shift Wb by Wns
     SL W1, W2, W3
     mov W3, AccZ1
@@ -294,7 +294,7 @@ Call RECEIVEWAIT
 ;;Wb=w1, Wns=w2, Wnd=w3
     mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-    mov 8, W2
+    mov #8, W2
     ;Wnd=Left shift Wb by Wns
     SL W1, W2, W3
     mov W3, Temperature1
@@ -338,7 +338,7 @@ Call RECEIVEWAIT
 ;;Wb=w1, Wns=w2, Wnd=w3
     mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-    mov 8, W2
+    mov #8, W2
     ;Wnd=Left shift Wb by Wns
     SL W1, W2, W3
     mov W3, GyroX1
@@ -382,7 +382,7 @@ Call RECEIVEWAIT
 ;;Wb=w1, Wns=w2, Wnd=w3
     mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-    mov 8, W2
+    mov #8, W2
     ;Wnd=Left shift Wb by Wns
     SL W1, W2, W3
     mov W3, GyroY1
@@ -426,7 +426,7 @@ Call RECEIVEWAIT
 ;;Wb=w1, Wns=w2, Wnd=w3
     mov I2CRCV, W1
     Call CLEARRECEIVEWAIT
-    mov 8, W2
+    mov #8, W2
     ;SL  Wb,Wns,Wnd   Wnd=Left shift Wb by Wns
     SL W1, W2, W3
     mov W3, GyroZ1
