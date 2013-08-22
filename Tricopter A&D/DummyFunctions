@@ -1,0 +1,10 @@
+#pragma src
+
+extern unsigned char foo(unsigned char);
+
+void dummy(void)
+{
+  unsigned char x,y;
+  x = 1;
+  y = foo(x);
+}
