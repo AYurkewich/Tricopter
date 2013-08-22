@@ -1,0 +1,163 @@
+[Header]
+MagicCookie={0b13fe8c-dfe0-40eb-8900-6712719559a7}
+Version=1.0
+[File000]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\Init_Osc.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-gcc.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall
+TraceCmdString=
+DebugOptions=-D__DEBUG -D__MPLAB_DEBUGGER_PK3=1
+[File001]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\Init_Timer1.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-gcc.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall
+TraceCmdString=
+DebugOptions=-D__DEBUG -D__MPLAB_DEBUGGER_PK3=1
+[File002]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\PWM.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={C6E07232-414F-4A0C-AF99-CD44E2B71960}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-as.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g
+TraceCmdString=
+DebugOptions=--defsym=__DEBUG=1 --defsym=__MPLAB_DEBUGGER_PK3=1
+[File003]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\MainTricopter.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-gcc.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall
+TraceCmdString=
+DebugOptions=-D__DEBUG -D__MPLAB_DEBUGGER_PK3=1
+[File004]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\MoveTricopter.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-gcc.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall
+TraceCmdString=
+DebugOptions=-D__DEBUG -D__MPLAB_DEBUGGER_PK3=1
+[File005]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\Init_PWM.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-gcc.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall
+TraceCmdString=
+DebugOptions=-D__DEBUG -D__MPLAB_DEBUGGER_PK3=1
+[File006]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\Interrupts.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={C6E07232-414F-4A0C-AF99-CD44E2B71960}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-as.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g
+TraceCmdString=
+DebugOptions=--defsym=__DEBUG=1 --defsym=__MPLAB_DEBUGGER_PK3=1
+[File007]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\interrupt_vector.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={C6E07232-414F-4A0C-AF99-CD44E2B71960}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-as.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g
+TraceCmdString=
+DebugOptions=--defsym=__DEBUG=1 --defsym=__MPLAB_DEBUGGER_PK3=1
+[File008]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\Linkers.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={C6E07232-414F-4A0C-AF99-CD44E2B71960}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-as.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g
+TraceCmdString=
+DebugOptions=--defsym=__DEBUG=1 --defsym=__MPLAB_DEBUGGER_PK3=1
+[File009]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\I2Cbit.o
+Folder=Intermediary
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={B1442D91-FF1F-4E60-9714-C39C1BA9DB62}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-gcc.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-g -Wall
+TraceCmdString=
+DebugOptions=-D__DEBUG -D__MPLAB_DEBUGGER_PK3=1
+[File010]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\Tricopter A&D.cof
+Folder=Output
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={6836D8CA-42BB-48FB-9E77-3F0AA8005073}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-ld.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
+TraceCmdString=
+DebugOptions=--defsym=__MPLAB_DEBUG=1 --defsym=__MPLAB_DEBUGGER_PK3=1 --defsym=__ICD2RAM=1
+[File011]
+Location=C:\Documents and Settings\Dan\My Documents\Dropbox\Code\Tricopter\Tricopter A&D\Tricopter A&D.hex
+Folder=Output
+DeviceName=dsPIC33FJ32MC202
+LanguageToolSuiteID={9BCCB495-CD65-480A-BA76-63D8E78B117F}
+LanguageToolID={6836D8CA-42BB-48FB-9E77-3F0AA8005073}
+LanguageToolLocation=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-ld.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)|C:\Program Files\Microchip\xc16\v1.11\src\libm||$(INCDIR)|C:\Program Files\Microchip\xc16\v1.11\inc||$(LIBDIR)|C:\Program Files\Microchip\xc16\v1.11\lib||$(LKRDIR)||
+SOLK=<src>|Init_Osc.c|Init_Timer1.c|PWM.s|MainTricopter.c|MoveTricopter.c|..\..\I2C\I2CModTricopterV8\Init_PWM.c|Interrupts.s|interrupt_vector.s|Linkers.s|I2Cbit.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=-Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
+TraceCmdString=
+DebugOptions=--defsym=__MPLAB_DEBUG=1 --defsym=__MPLAB_DEBUGGER_PK3=1 --defsym=__ICD2RAM=1
+[TOOL_LOC_STAMPS]
+tool_loc{C6E07232-414F-4A0C-AF99-CD44E2B71960}=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-as.exe
+tool_loc{B1442D91-FF1F-4E60-9714-C39C1BA9DB62}=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-gcc.exe
+tool_loc{6836D8CA-42BB-48FB-9E77-3F0AA8005073}=C:\Program Files\Microchip\xc16\v1.11\bin\xc16-ld.exe
